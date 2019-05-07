@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "507472906508",
+    "firebase_url": "https://blogsport-29b88.firebaseio.com",
+    "project_id": "blogsport-29b88",
+    "storage_bucket": "blogsport-29b88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507472906508:android:bb2da134324e96ef",
+        "android_client_info": {
+          "package_name": "com.example.idanl.blogsport"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507472906508-jmj913eg6i8gu0qvgcv9dtgcjtkqi8ng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjfr4I1tdXDlpMpluhWbTc6ioDIRGTLX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507472906508-jmj913eg6i8gu0qvgcv9dtgcjtkqi8ng.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
