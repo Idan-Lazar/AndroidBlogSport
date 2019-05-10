@@ -13,10 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activities.RegisterActivity"></activity>
-        <activity
-            android:name=".Activities.HomeActivity"
-           />
+        <activity android:name=".Activities.MainActivity"></activity>
+        <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

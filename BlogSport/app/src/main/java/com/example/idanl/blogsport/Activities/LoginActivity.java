@@ -1,8 +1,8 @@
 package com.example.idanl.blogsport.Activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private ProgressBar loginProgress;
     private FirebaseAuth mAuth;
-    private Intent homeActivity;
+    private Intent mainActivity;
     private ImageView loginPhoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         mAuth = FirebaseAuth.getInstance();
-        homeActivity = new Intent(this, HomeActivity.class);
+        mainActivity = new Intent(this, MainActivity.class);
         loginProgress.setVisibility(View.INVISIBLE);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,14 +99,14 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user!=null)
         {
-            updateUI();
+           updateUI();
 
         }
     }
 
     private void updateUI() {
-        startActivity(homeActivity);
-        finish();
+       startActivity(mainActivity);
+       finish();
     }
 
 
