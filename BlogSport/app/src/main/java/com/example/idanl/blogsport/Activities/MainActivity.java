@@ -72,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
         // ini popup
         iniPopup();
         setupPopupImageClick();
-        FloatingActionButton fab =(FloatingActionButton)findViewById(R.id.floatingActionButton);
+        FloatingActionButton fab =findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emptypopup();
+
                 popAddPost.show();
 
             }
