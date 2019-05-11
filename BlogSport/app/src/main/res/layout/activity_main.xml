@@ -18,12 +18,13 @@
         android:layout_weight="1"
         android:clickable="true"
         android:focusable="true"
+        android:foregroundGravity="center"
         android:src="@drawable/write_ico"
+        android:tint="#FFFFFF"
         app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal"
+        app:fabSize="auto"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:useCompatPadding="false" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <fragment
         android:id="@+id/main_navhost_frag"

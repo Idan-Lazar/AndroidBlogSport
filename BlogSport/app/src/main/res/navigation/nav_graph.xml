@@ -11,12 +11,12 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/profileFragment2"
+        android:id="@+id/profileFragment"
         android:name="com.example.idanl.blogsport.Fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
-        android:id="@+id/writersFragment2"
+        android:id="@+id/writersFragment"
         android:name="com.example.idanl.blogsport.Fragments.WritersFragment"
         android:label="fragment_writers"
         tools:layout="@layout/fragment_writers" />

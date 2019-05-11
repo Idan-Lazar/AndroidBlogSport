@@ -20,19 +20,19 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="profileFragment2">
+                  <entry key="profileFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="236" />
-                            <option name="y" value="-97" />
+                            <option name="x" value="332" />
+                            <option name="y" value="-159" />
                           </Point>
                         </option>
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="writersFragment2">
+                  <entry key="writersFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">

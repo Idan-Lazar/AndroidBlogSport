@@ -30,9 +30,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class RegisterActivity extends AppCompatActivity{
 
-    ImageView ImgUserPhoto = null;
+    CircleImageView ImgUserPhoto = null;
     static int PReqCode = 1;
     static int REQUESTCODE = 1;
     Uri pickerImgUri = null;
@@ -182,13 +184,9 @@ public class RegisterActivity extends AppCompatActivity{
     private void checkandrequestforpermission() {
         if(ContextCompat.checkSelfPermission(RegisterActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
         {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE))
-            {
-                Toast.makeText(RegisterActivity.this,"please accept for required permission",Toast.LENGTH_SHORT).show();
-            }
-            else{
-                ActivityCompat.requestPermissions(RegisterActivity.this,new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},PReqCode);
-            }
+
+           ActivityCompat.requestPermissions(RegisterActivity.this,new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},PReqCode);
+
         }
         else{
             openGallery();
