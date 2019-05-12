@@ -132,4 +132,23 @@
         app:layout_constraintStart_toStartOf="@+id/regBtn"
         app:layout_constraintTop_toTopOf="@+id/regBtn" />
 
+    <TextView
+        android:id="@+id/reg_signin_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:clickable="true"
+        android:linksClickable="true"
+        android:text="Sign In"
+        android:textColor="@color/colorAccent"
+        android:textColorLink="@color/colorPrimary"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/regPogressBar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

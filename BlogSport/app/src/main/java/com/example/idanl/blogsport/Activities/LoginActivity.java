@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent registerActivity = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(registerActivity);
-
+                finish();
             }
         });
         mAuth = FirebaseAuth.getInstance();

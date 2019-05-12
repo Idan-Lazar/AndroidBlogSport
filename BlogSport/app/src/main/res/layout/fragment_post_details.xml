@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".Fragments.PostDetailsFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/post_d_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/post_d_image"
+                android:layout_width="0dp"
+                android:layout_height="208dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="0dp"
+                android:layout_height="92dp"
+                android:src="@drawable/black_gradient"
+                app:layout_constraintBottom_toBottomOf="@+id/post_d_image"
+                app:layout_constraintEnd_toEndOf="@+id/post_d_image"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/post_d_writer_date"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center|left"
+                android:text="TextView"
+                android:textSize="16dp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toTopOf="@+id/divider2"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                tools:text="18 Jan 2018 | By Idan Frenkel" />
+
+            <EditText
+                android:id="@+id/post_d_comment_text"
+                android:layout_width="277dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/edittext_button_style_rounded"
+                android:ems="10"
+                android:hint="Enter Your Comment"
+                android:inputType="textShortMessage|text|textCapSentences"
+                android:maxLength="35"
+                android:maxLines="1"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/post_d_user_profile_comment"
+                app:layout_constraintStart_toEndOf="@+id/post_d_user_profile_comment"
+                app:layout_constraintTop_toTopOf="@+id/post_d_user_profile_comment" />
+
+            <ImageView
+                android:id="@+id/post_d_like_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/like_icon"
+                android:tint="#fff"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView4"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/post_d_user_profile_comment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:translationY="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_d_content"
+                tools:src="@tools:sample/avatars" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/post_d_user_profile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginLeft="2dp"
+                android:translationY="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/post_d_writer_date"
+                app:layout_constraintStart_toEndOf="@+id/post_d_writer_date"
+                app:layout_constraintTop_toTopOf="@+id/post_d_writer_date"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/post_d_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="TextView"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2"
+                tools:text="dsfgfdg gfdgfdg gggd gfdgfdg gfgf g fgfd  gfdgf fdgfdgfd d fd gfd fdg fdgfdfgfd  g gf" />
+
+            <TextView
+                android:id="@+id/post_d_sec_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="top|left"
+                android:text="Maci? \n What is macbi deal? \n why they are acting like this?"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="395dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_d_writer_date" />
+
+            <TextView
+                android:id="@+id/post_d_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/post_item_category_style"
+                android:gravity="right"
+                android:text="TextView"
+                android:textAllCaps="true"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/post_d_user_profile"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                tools:text="NBA" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="395dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_d_sec_title" />
+
+            <TextView
+                android:id="@+id/post_d_like_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="100"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                app:fontFamily="sans-serif-black"
+                app:layout_constraintBottom_toBottomOf="@+id/post_d_like_btn"
+                app:layout_constraintStart_toEndOf="@+id/post_d_like_btn"
+                app:layout_constraintTop_toTopOf="@+id/post_d_like_btn"
+                tools:text="100" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="395dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_d_title" />
+
+            <TextView
+                android:id="@+id/post_d_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="What is up with Macabi? \n Terible Macbi"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_d_image" />
+
+            <Button
+                android:id="@+id/post_d_btn_add_comment"
+                style="@style/Widget.AppCompat.Button.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/button_style_rounded"
+                android:text="Add"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/post_d_user_profile_comment"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/post_d_comment_text"
+                app:layout_constraintTop_toTopOf="@+id/post_d_user_profile_comment" />
+
+            <ProgressBar
+                android:id="@+id/comment_progressBar"
+                style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Inverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_style_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/post_d_btn_add_comment"
+                app:layout_constraintEnd_toEndOf="@+id/post_d_btn_add_comment"
+                app:layout_constraintStart_toStartOf="@+id/post_d_btn_add_comment"
+                app:layout_constraintTop_toTopOf="@+id/post_d_btn_add_comment" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/post_d_commet_RV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/post_d_comment_text"
+                tools:layout_editor_absoluteX="0dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+            android:id="@+id/post_d_progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="288dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -4,6 +4,8 @@ package com.example.idanl.blogsport.Activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.idanl.blogsport.R;
@@ -30,6 +33,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Text;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity{
@@ -43,6 +48,7 @@ public class RegisterActivity extends AppCompatActivity{
     private EditText userEmail,userName,userPassword,userPassword2;
     private ProgressBar loadingProgress;
     private Button btn;
+    private TextView signin_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +58,22 @@ public class RegisterActivity extends AppCompatActivity{
         //initals
         userEmail = findViewById(R.id.regMail);
         userPassword = findViewById(R.id.regPassword);
+        signin_btn = findViewById(R.id.reg_signin_btn);
         userPassword2 = findViewById(R.id.regPassword2);
         userName = findViewById(R.id.regName);
         loadingProgress = findViewById(R.id.regPogressBar);
         btn = findViewById(R.id.regBtn);
         loadingProgress.setVisibility(View.INVISIBLE);
         mAuth = FirebaseAuth.getInstance();
-        
+        signin_btn.setPaintFlags(signin_btn.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        signin_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signinActivity = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(signinActivity);
+                finish();
+            }
+        });
         
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +87,17 @@ public class RegisterActivity extends AppCompatActivity{
                 
                 
                 ///Something went worng
-                if(email.isEmpty() || name.isEmpty() || password.isEmpty() || password2.isEmpty() || !password.equals(password2))
+                if(email.isEmpty() || name.isEmpty() || password.isEmpty() || password2.isEmpty() || !password.equals(password2) || pickerImgUri==null)
                 {
-                    showMessage("Please Verify all fields");
+                    if(pickerImgUri==null)
+                    {
+                        showMessage("Please add picture and verify all fields");
+                    }
+                    else
+                    {
+                        showMessage("Please Verify all fields");
+                    }
+
                     btn.setVisibility(View.VISIBLE);
                     loadingProgress.setVisibility(View.INVISIBLE);
                 }
@@ -118,7 +141,7 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     private void UpdateUserInfo(final String userName, Uri pickerImgUri, final FirebaseUser currentUser) {
-        if (pickerImgUri != null) {
+
             StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("users_photos");
             final StorageReference imageFilePath = mStorage.child(pickerImgUri.getLastPathSegment());
             imageFilePath.putFile(pickerImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -146,13 +169,8 @@ public class RegisterActivity extends AppCompatActivity{
                     });
                 }
             });
-        }
-        else
-        {
-            showMessage("Please Select Your Photo");
-            btn.setVisibility(View.VISIBLE);
-            loadingProgress.setVisibility(View.INVISIBLE);
-        }
+
+
     }
 
     private void updateUI() {

@@ -24,14 +24,14 @@
         android:id="@+id/popup_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:background="@drawable/popup_edittext_style"
         android:ems="10"
         android:hint="Title"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/popup_user_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:autofillHints="" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/popup_content"
@@ -41,7 +41,7 @@
         android:ems="10"
         android:hint="Content"
         android:inputType="textMultiLine"
-        android:lines="5"
+        android:lines="6"
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -90,7 +90,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
+        android:layout_height="193dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/popup_content">
@@ -98,12 +98,12 @@
         <ImageView
             android:id="@+id/image_post_popup"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="match_parent"
             android:background="#414141"
-            android:cropToPadding="true"
-            android:scaleType="centerCrop"
-            android:tint="#00000000"
-            tools:srcCompat="@tools:sample/backgrounds/scenic[0]" />
+            android:padding="30dp"
+            android:scaleType="centerInside"
+            android:tint="@color/common_google_signin_btn_text_dark_pressed"
+            app:srcCompat="@drawable/photo_icon" />
 
         <View
             android:id="@+id/gradient_shape_view_popup"

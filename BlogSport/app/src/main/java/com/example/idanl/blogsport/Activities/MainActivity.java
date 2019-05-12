@@ -1,6 +1,7 @@
 package com.example.idanl.blogsport.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -10,9 +11,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -89,13 +92,16 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.bottomNavigationView);
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
         //if i want the title will be the same
-        //NavigationUI.setupActionBarWithNavController(this,navController);
+        NavigationUI.setupActionBarWithNavController(this,navController);
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle("BlogSport");
 
     }
 
 
 
     private void setupPopupImageClick() {
+
     popupPostImage.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -120,6 +126,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void enable_input(boolean b)
+    {
+        popupContent.setEnabled(b);
+        popupPostImage.setEnabled(b);
+        popupCategory.setEnabled(b);
+        popupTitle.setEnabled(b);
+        popupSecondTitle.setEnabled(b);
+
+    }
     private void iniPopup() {
         popAddPost = new Dialog(this);
 
@@ -143,14 +158,16 @@ public class MainActivity extends AppCompatActivity {
         //load Current user Image
 
         Glide.with(MainActivity.this).load(currentUser.getPhotoUrl()).into(popupUserImage);
-
+        pickerImgUri = null;
 
         //Add ost Listner
         popupAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 popupAddBtn.setVisibility(View.INVISIBLE);
                 popupClickProgress.setVisibility(View.VISIBLE);
+                enable_input(false);
 
                 if (!popupTitle.getText().toString().isEmpty() && !popupSecondTitle.getText().toString().isEmpty()
                 && !popupContent.getText().toString().isEmpty() &&  !popupCategory.getText().toString().isEmpty() && pickerImgUri !=null)
@@ -166,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     String imageDownloadLink = uri.toString();
                                     // create post  object
-                                    Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,currentUser.getUid(),currentUser.getPhotoUrl().toString());
+                                    Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,currentUser.getUid(),currentUser.getPhotoUrl().toString(),currentUser.getDisplayName(),0);
                                     //Add post to the firebase database
 
                                     addPost(post);
@@ -178,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                                     showMessage(e.getMessage());
                                     popupAddBtn.setVisibility(View.VISIBLE);
                                     popupClickProgress.setVisibility(View.INVISIBLE);
+                                    enable_input(true);
                                 }
                             });
                         }
@@ -188,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     showMessage("Please Verify all input fields and choose post Image");
                     popupAddBtn.setVisibility(View.VISIBLE);
                     popupClickProgress.setVisibility(View.INVISIBLE);
+                    enable_input(true);
                 }
 
             }
@@ -209,6 +228,9 @@ public class MainActivity extends AppCompatActivity {
                 popupAddBtn.setVisibility(View.VISIBLE);
                 popupClickProgress.setVisibility(View.INVISIBLE);
                 popAddPost.dismiss();
+
+                iniPopup();
+                setupPopupImageClick();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -224,13 +246,21 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK && requestCode == REQUESTCODE && data!= null)
         {
+
             pickerImgUri = data.getData();
+            popupPostImage.setPadding(0,0,0,0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                popupPostImage.setImageTintList(ColorStateList.valueOf(android.R.color.transparent));
+            }
+            popupPostImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             popupPostImage.setImageURI(pickerImgUri);
+
         }
     }
 
