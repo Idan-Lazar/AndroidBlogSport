@@ -32,7 +32,7 @@
                 android:id="@+id/imageView4"
                 android:layout_width="0dp"
                 android:layout_height="92dp"
-                android:src="@drawable/black_gradient"
+                app:srcCompat="@drawable/black_gradient"
                 app:layout_constraintBottom_toBottomOf="@+id/post_d_image"
                 app:layout_constraintEnd_toEndOf="@+id/post_d_image"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -79,7 +79,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/like_icon"
+                app:srcCompat="@drawable/like_icon"
                 android:tint="#fff"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView4"
                 app:layout_constraintStart_toStartOf="parent"

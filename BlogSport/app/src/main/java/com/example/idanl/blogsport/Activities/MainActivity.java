@@ -34,6 +34,7 @@ import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.idanl.blogsport.Models.Post;
+import com.example.idanl.blogsport.Models.PostViewModel;
 import com.example.idanl.blogsport.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,6 +51,7 @@ import com.google.firebase.storage.UploadTask;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
+
     private NavController navController;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;

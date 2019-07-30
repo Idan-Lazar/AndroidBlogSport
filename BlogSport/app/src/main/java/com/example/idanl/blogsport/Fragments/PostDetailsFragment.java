@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.idanl.blogsport.Adapters.CommentAdapter;
+import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Models.Comment;
 import com.example.idanl.blogsport.Models.Post;
 import com.example.idanl.blogsport.R;
@@ -71,7 +72,6 @@ public class PostDetailsFragment extends Fragment {
     ConstraintLayout layout;
     CommentAdapter commentAdapter;
     List<Comment> comments;
-
     Post p;
     public PostDetailsFragment() {
         // Required empty public constructor
@@ -221,7 +221,7 @@ public class PostDetailsFragment extends Fragment {
             tv_Content.setText(p.getContent());
             tv_Category.setText(p.getCategory());
             tv_Likes.setText(Integer.toString(p.getLikes()));
-            tv_Date_Writer.setText("Published at "+timestamptoString((long)p.getTimestamp())+" By "+ p.getUserName());
+            tv_Date_Writer.setText("Published at "+" By "+ p.getUserName());
             Glide.with(this).load(p.getUserPhoto()).into(image_profile);
             Glide.with(this).load(p.getUserPhoto()).into(image_profile_comment);
             Glide.with(this).load(p.getPicture()).into(image_post);
@@ -236,7 +236,8 @@ public class PostDetailsFragment extends Fragment {
     }
 
     private void initRVcomment() {
-        commentRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        commentRv.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
+        commentRv.setAdapter(commentAdapter);
         DatabaseReference refComments = databaseReferenceComment.child(p.getPostKey());
         refComments.addValueEventListener(new ValueEventListener() {
             @Override

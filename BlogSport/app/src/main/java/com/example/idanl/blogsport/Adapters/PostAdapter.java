@@ -12,6 +12,9 @@ import com.example.idanl.blogsport.Fragments.HomeFragmentDirections;
 import com.example.idanl.blogsport.Models.Post;
 import com.example.idanl.blogsport.R;
 
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -20,44 +23,52 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
 
-    Context mContext;
-    List<Post> mData;
 
-    public PostAdapter(Context mContext, List<Post> mData) {
-        this.mContext = mContext;
-        this.mData = mData;
+    private List<Post> mPosts = Collections.emptyList(); // Cached copy of words
+
+    public PostAdapter() {
+        this.mPosts = Collections.emptyList();
     }
 
-    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View row = LayoutInflater.from(mContext).inflate(R.layout.row_post_item, parent, false);
-
-        return new MyViewHolder(row);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.row_post_item, parent,false);
+        MyViewHolder viewHolder = new MyViewHolder(view);
+        return viewHolder;
     }
+
+
+    public void setPosts(List<Post> posts) {
+        mPosts = posts;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemCount() {
+        return mPosts.size();
+    }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
 
-        Post selected = mData.get(position);
+        Post selected = mPosts.get(position);
 
         holder.tvTitle.setText(selected.getTitle());
         holder.tvSecondTitle.setText(selected.getSecond_title());
         holder.tvCategory.setText(selected.getCategory());
         holder.tvWriterName.setText(selected.getUserName());
-        Glide.with(mContext).load(selected.getPicture()).into(holder.imgPost);
-        Glide.with(mContext).load(selected.getUserPhoto()).into(holder.imgPostProfile);
+        Glide.with(MyApplication.getContext()).load(selected.getPicture()).into(holder.imgPost);
+        Glide.with(MyApplication.getContext()).load(selected.getUserPhoto()).into(holder.imgPostProfile);
 
 
 
     }
 
-    @Override
-    public int getItemCount() {
-        return mData.size();
-    }
+
 
     public class MyViewHolder extends  RecyclerView.ViewHolder{
 
@@ -77,7 +88,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    HomeFragmentDirections.ActionHomeFragmentToPostDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(mData.get(position));
+                    HomeFragmentDirections.ActionHomeFragmentToPostDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(mPosts.get(position));
                     Navigation.findNavController(v)
                             .navigate(action);
                 }

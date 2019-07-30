@@ -1,13 +1,29 @@
 package com.example.idanl.blogsport.Models;
 
+import android.util.Log;
+
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavType;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "post_table")
 public class Post  implements Serializable {
+
+    @PrimaryKey
+    @NonNull
     private String postKey;
+
+    @NonNull
     private String title;
 
     public String getPostKey() {
@@ -18,11 +34,29 @@ public class Post  implements Serializable {
         this.postKey = postKey;
     }
 
+    @NonNull
     private String second_title;
+    @NonNull
     private String category;
+    @NonNull
     private String content;
+    @NonNull
     private String picture;
+    @NonNull
     private String userId;
+    @NonNull
+    private int likes;
+    @NonNull
+    private String userName;
+    @NonNull
+    private String userPhoto;
+
+    /*
+    To change the timestap into data time
+    * */
+    @Ignore
+    private String timestamp;
+
 
     public int getLikes() {
         return likes;
@@ -33,13 +67,6 @@ public class Post  implements Serializable {
 
     }
 
-    private int likes;
-
-
-    private String userName;
-    private String userPhoto;
-    private Object timestamp;
-
     public Post(String title, String second_title, String category, String content, String picture, String userId, String userPhoto, String userName, int likes) {
         this.likes = likes;
         this.title = title;
@@ -49,10 +76,19 @@ public class Post  implements Serializable {
         this.picture = picture;
         this.userId = userId;
         this.userPhoto = userPhoto;
-        this.timestamp = ServerValue.TIMESTAMP;
+        this.timestamp = "fgfdgfd";
         this.userName = userName;
     }
 
+
+    public String getTimeStamp() {
+        return timestamp;
+    }
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Ignore
     public Post() {
     }
 
@@ -92,9 +128,6 @@ public class Post  implements Serializable {
         return userPhoto;
     }
 
-    public Object getTimestamp() {
-        return timestamp;
-    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -124,7 +157,5 @@ public class Post  implements Serializable {
         this.userPhoto = userPhoto;
     }
 
-    public void setTimestamp(Object timestamp) {
-        this.timestamp = timestamp;
-    }
+
 }

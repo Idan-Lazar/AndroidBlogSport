@@ -11,12 +11,15 @@ import com.bumptech.glide.Glide;
 import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Adapters.PostAdapter;
 import com.example.idanl.blogsport.Models.Post;
+import com.example.idanl.blogsport.Models.PostViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +40,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -48,11 +53,12 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private RecyclerView postRecyclerView;
-    PostAdapter postAdapter;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    final PostAdapter adapter = new PostAdapter();
+    /*FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;*/
     List<Post> postList;
     ProgressBar progressBar;
+    private PostViewModel mPostViewModel;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -66,8 +72,8 @@ public class HomeFragment extends Fragment {
         currentUser = mAuth.getCurrentUser();
         DialogFragment f = new DialogFragment();
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts");
+        /*firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Posts");*/
         // Inflate the layout for this fragment
         postRecyclerView = v.findViewById(R.id.post_RV);
         progressBar = v.findViewById(R.id.home_progressBar);
@@ -75,16 +81,29 @@ public class HomeFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         postRecyclerView.setHasFixedSize(true);
+        postRecyclerView.setAdapter(adapter);
 
+        mPostViewModel = ViewModelProviders.of(this).get(PostViewModel.class);
+        mPostViewModel.getAllPosts().observe(this, new Observer<List<Post>>() {
+            @Override
+            public void onChanged(@Nullable final List<Post> posts){
+                adapter.setPosts(posts);
+                postRecyclerView.setAdapter(adapter);
+                postRecyclerView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
         return v;
     }
+
+
 
     @Override
     public void onStart() {
         super.onStart();
 
         // Get List Posts from the database
-
+/*
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -105,6 +124,7 @@ public class HomeFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
+
     }
 }

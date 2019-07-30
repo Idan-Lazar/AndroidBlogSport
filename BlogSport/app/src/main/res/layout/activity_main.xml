@@ -19,7 +19,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foregroundGravity="center"
-        android:src="@drawable/write_ico"
+        app:srcCompat="@drawable/write_ico"
         android:tint="#FFFFFF"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="auto"
