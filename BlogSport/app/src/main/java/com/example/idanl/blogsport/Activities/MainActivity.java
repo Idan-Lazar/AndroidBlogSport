@@ -5,7 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -27,26 +27,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.idanl.blogsport.Models.Post;
-import com.example.idanl.blogsport.Models.PostViewModel;
+import com.example.idanl.blogsport.Models.PostInsertViewModel;
+import com.example.idanl.blogsport.Models.PostListViewModel;
+import com.example.idanl.blogsport.Models.PostRepository;
 import com.example.idanl.blogsport.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -64,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar popupClickProgress;
     TextView popupTitle, popupSecondTitle, popupCategory, popupContent;
     Dialog popAddPost;
+    private PostInsertViewModel mPostInsertViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        mPostInsertViewModel = ViewModelProviders.of(this).get(PostInsertViewModel.class);
 
 
         navController = Navigation.findNavController(this,R.id.main_navhost_frag);
@@ -174,32 +172,28 @@ public class MainActivity extends AppCompatActivity {
                 if (!popupTitle.getText().toString().isEmpty() && !popupSecondTitle.getText().toString().isEmpty()
                 && !popupContent.getText().toString().isEmpty() &&  !popupCategory.getText().toString().isEmpty() && pickerImgUri !=null)
                 {
-
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("blog_images");
-                    final StorageReference imageFilePath = storageReference.child(pickerImgUri.getLastPathSegment());
-                    imageFilePath.putFile(pickerImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    mPostInsertViewModel.saveBlogImage(pickerImgUri, new PostRepository.SaveImageListener() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    String imageDownloadLink = uri.toString();
-                                    // create post  object
-                                    Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,currentUser.getUid(),currentUser.getPhotoUrl().toString(),currentUser.getDisplayName(),0);
-                                    //Add post to the firebase database
+                        public void onComplete(String imageDownloadLink) {
+                            Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,currentUser.getUid(),currentUser.getPhotoUrl().toString(),currentUser.getDisplayName(),0);
+                            addPost(post);
+                            enable_input(true);
+                        }
 
-                                    addPost(post);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    //something goes wrong
-                                    showMessage(e.getMessage());
-                                    popupAddBtn.setVisibility(View.VISIBLE);
-                                    popupClickProgress.setVisibility(View.INVISIBLE);
-                                    enable_input(true);
-                                }
-                            });
+                        @Override
+                        public void onOffline() {
+                            showMessage("Device not Conected can't upload the post");
+                            popupAddBtn.setVisibility(View.VISIBLE);
+                            popupClickProgress.setVisibility(View.INVISIBLE);
+                            enable_input(true);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            showMessage(e.getMessage());
+                            popupAddBtn.setVisibility(View.VISIBLE);
+                            popupClickProgress.setVisibility(View.INVISIBLE);
+                            enable_input(true);
                         }
                     });
                 }
@@ -217,31 +211,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addPost(Post post) {
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Posts").push();
-        String key = myRef.getKey();
-        post.setPostKey(key);
-         // add post to the databse
-        myRef.setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mPostInsertViewModel.insert(post, new PostRepository.InsertPostListener() {
             @Override
-            public void onSuccess(Void aVoid) {
-                showMessage("Post Added successfully");
-                popupAddBtn.setVisibility(View.VISIBLE);
-                popupClickProgress.setVisibility(View.INVISIBLE);
-                popAddPost.dismiss();
-
-                iniPopup();
-                setupPopupImageClick();
+            public void onComplete(boolean success) {
+                if (success){
+                    showMessage("Post Added successfully");
+                    popupAddBtn.setVisibility(View.VISIBLE);
+                    popupClickProgress.setVisibility(View.INVISIBLE);
+                    popAddPost.dismiss();
+                    iniPopup();
+                    setupPopupImageClick();
+                    enable_input(true);
+                }
             }
-        }).addOnFailureListener(new OnFailureListener() {
+
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onError(Exception e) {
                 showMessage(e.getMessage());
                 popupAddBtn.setVisibility(View.VISIBLE);
                 popupClickProgress.setVisibility(View.INVISIBLE);
+                enable_input(true);
+            }
+
+            @Override
+            public void onOffline() {
+                showMessage("Device not Conected can't upload the post");
+                popupAddBtn.setVisibility(View.VISIBLE);
+                popupClickProgress.setVisibility(View.INVISIBLE);
+                enable_input(true);
             }
         });
+
     }
 
     private void showMessage(String message) {

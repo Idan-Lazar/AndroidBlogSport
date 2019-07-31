@@ -1,46 +1,105 @@
 package com.example.idanl.blogsport.Models;
 
-import android.app.Application;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.view.Display;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-
-import com.example.idanl.blogsport.Adapters.MyApplication;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
 public class PostRepository {
+    final public static PostRepository instance = new PostRepository();
     private PostDao mPostDao;
-    private LiveData<List<Post>> mAllPosts;
+    ModelFirebase modelFirebase;
 
-    PostRepository(Application application) {
+    PostRepository() {
         AppLocalDbRepository db = ModelSql.db;
-        mPostDao = db.postDao();
-        mAllPosts = mPostDao.getAllPosts();
+        modelFirebase = new ModelFirebase();
+
     }
-    LiveData<List<Post>> getmAllPosts() {
-        return mAllPosts;
-    }
-
-
-    public void insert (Post post) {
-        new insertAsyncTask(mPostDao).execute(post);
-    }
-
-    private static class insertAsyncTask extends AsyncTask<Post, Void, Void> {
-
-        private PostDao mAsyncTaskDao;
-
-        insertAsyncTask(PostDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
+    class PostListLiveData extends MutableLiveData<List<Post>>{
         @Override
-        protected Void doInBackground(final Post... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
+        protected void onActive() {
+            super.onActive();
+            modelFirebase.getAllPosts(new GetAllPostsListener() {
+                @Override
+                public void onResponse(List<Post> list) {
+                    Log.d("TAG","FB data = " + list.size() );
+                    setValue(list);
+                    PostAsyncDao.deleteAll();
+                    PostAsyncDao.insertPosts(list);
+
+                }
+                public void onError()
+                {
+                    PostAsyncDao.getAllPosts(new GetAllPostsListener() {
+                        @Override
+                        public void onResponse(List<Post> list) {
+                            setValue(list);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+                }
+            });
+
+        }
+        @Override
+        protected void onInactive() {
+            super.onInactive();
+            modelFirebase.cancellGetAllStudents();
+            Log.d("TAG","cancellGetAllStudents");
+        }
+        public PostListLiveData() {
+            super();
+            PostAsyncDao.getAllPosts(new GetAllPostsListener() {
+                                         @Override
+                                         public void onResponse(List<Post> list) {
+                                             setValue(list);
+                                         }
+
+                @Override
+                public void onError() {
+
+                }
+            });
         }
     }
+
+    public interface GetAllPostsListener{
+        void onResponse(List<Post> list);
+        void onError();
+    }
+    PostListLiveData postListLiveData = new PostListLiveData();
+
+    public LiveData<List<Post>> getmAllPosts() {
+        return postListLiveData;
+    }
+
+
+    public interface InsertPostListener{
+        void onComplete(boolean success);
+        void onError(Exception e);
+        void onOffline();
+    }
+    public void insert (Post post,InsertPostListener listener) {
+       modelFirebase.addPost(post,listener);
+       //PostAsyncDao.insertPost(post);
+    }
+    public interface SaveImageListener{
+        void onComplete(String uri);
+        void onOffline();
+        void onError(Exception e);
+    }
+    public void saveBlogImage(Uri imageBitmap, SaveImageListener listener) {
+        modelFirebase.saveBlogImage(imageBitmap, listener);
+    }
+
 }
 

@@ -1,50 +1,31 @@
 package com.example.idanl.blogsport.Fragments;
 
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import com.bumptech.glide.Glide;
-import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Adapters.PostAdapter;
 import com.example.idanl.blogsport.Models.Post;
-import com.example.idanl.blogsport.Models.PostViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.idanl.blogsport.Models.PostListViewModel;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toolbar;
 
 import com.example.idanl.blogsport.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,7 +39,7 @@ public class HomeFragment extends Fragment {
     DatabaseReference databaseReference;*/
     List<Post> postList;
     ProgressBar progressBar;
-    private PostViewModel mPostViewModel;
+    private PostListViewModel mPostListViewModel;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -83,16 +64,17 @@ public class HomeFragment extends Fragment {
         postRecyclerView.setHasFixedSize(true);
         postRecyclerView.setAdapter(adapter);
 
-        mPostViewModel = ViewModelProviders.of(this).get(PostViewModel.class);
-        mPostViewModel.getAllPosts().observe(this, new Observer<List<Post>>() {
-            @Override
-            public void onChanged(@Nullable final List<Post> posts){
-                adapter.setPosts(posts);
-                postRecyclerView.setAdapter(adapter);
-                postRecyclerView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        });
+        mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
+        mPostListViewModel.getAllPosts().observe(this, new Observer<List<Post>>() {
+                    @Override
+                    public void onChanged(@Nullable final List<Post> posts){
+                        adapter.setPosts(posts);
+                        postRecyclerView.setAdapter(adapter);
+                        postRecyclerView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                });
+
         return v;
     }
 

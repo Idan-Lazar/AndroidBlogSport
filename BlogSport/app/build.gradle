@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.idanl.blogsport"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -27,14 +27,15 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
-    //firebase core
-    implementation 'com.google.firebase:firebase-core:16.0.1'
     //firebase auth
-    implementation 'com.google.firebase:firebase-auth:16.0.1'
+    implementation 'com.google.firebase:firebase-auth:17.0.0'
     //firebase storage
-    implementation 'com.google.firebase:firebase-storage:16.0.1'\
+    implementation 'com.google.firebase:firebase-storage:17.0.0'
     //FIREBASE DATABASE
-    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-database:17.0.0'
+    implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-firestore:19.0.0'
+
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'androidx.vectordrawable:vectordrawable:1.0.0-beta01'
     testImplementation 'junit:junit:4.12'
@@ -50,7 +51,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
     implementation "androidx.room:room-rxjava2:$rootProject.roomVersion"
-
+    implementation 'com.android.support:multidex:1.0.3'
 
 
 // Lifecycle components
@@ -59,3 +60,4 @@ dependencies {
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: "androidx.navigation.safeargs"
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

@@ -55,7 +55,7 @@ public class Post  implements Serializable {
     To change the timestap into data time
     * */
     @Ignore
-    private String timestamp;
+    private Object timestamp;
 
 
     public int getLikes() {
@@ -76,15 +76,15 @@ public class Post  implements Serializable {
         this.picture = picture;
         this.userId = userId;
         this.userPhoto = userPhoto;
-        this.timestamp = "fgfdgfd";
+        this.timestamp = ServerValue.TIMESTAMP;
         this.userName = userName;
     }
 
 
-    public String getTimeStamp() {
+    public Object getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Object timestamp) {
         this.timestamp = timestamp;
     }
 
