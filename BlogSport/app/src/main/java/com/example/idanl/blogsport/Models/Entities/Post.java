@@ -1,4 +1,4 @@
-package com.example.idanl.blogsport.Models;
+package com.example.idanl.blogsport.Models.Entities;
 
 import android.util.Log;
 

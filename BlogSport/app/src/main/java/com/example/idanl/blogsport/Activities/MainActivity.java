@@ -1,6 +1,5 @@
 package com.example.idanl.blogsport.Activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -32,16 +31,14 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.example.idanl.blogsport.Models.Post;
-import com.example.idanl.blogsport.Models.PostInsertViewModel;
-import com.example.idanl.blogsport.Models.PostListViewModel;
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.ViewModel.PostInsertViewModel;
 import com.example.idanl.blogsport.Models.PostRepository;
+import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 import com.example.idanl.blogsport.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,8 +46,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
 
     private NavController navController;
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+
+    private Intent loginActivity;
+
     private ImageView popupPostImage;
     static int PReqCode = 1;
     static int REQUESTCODE = 1;
@@ -61,17 +59,17 @@ public class MainActivity extends AppCompatActivity {
     TextView popupTitle, popupSecondTitle, popupCategory, popupContent;
     Dialog popAddPost;
     private PostInsertViewModel mPostInsertViewModel;
-
+    private UserViewModel mUserViewModel ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //init
+        loginActivity = new Intent(this, LoginActivity.class);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-
+        mPostInsertViewModel = ViewModelProviders.of(this).get(PostInsertViewModel.class);
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         // ini popup
         iniPopup();
         setupPopupImageClick();
@@ -84,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        mPostInsertViewModel = ViewModelProviders.of(this).get(PostInsertViewModel.class);
 
 
         navController = Navigation.findNavController(this,R.id.main_navhost_frag);
@@ -157,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         popupClickProgress.setVisibility(View.INVISIBLE);
         //load Current user Image
 
-        Glide.with(MainActivity.this).load(currentUser.getPhotoUrl()).into(popupUserImage);
+        Glide.with(MainActivity.this).load(mUserViewModel.getUserImageUrl()).into(popupUserImage);
         pickerImgUri = null;
 
         //Add ost Listner
@@ -175,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     mPostInsertViewModel.saveBlogImage(pickerImgUri, new PostRepository.SaveImageListener() {
                         @Override
                         public void onComplete(String imageDownloadLink) {
-                            Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,currentUser.getUid(),currentUser.getPhotoUrl().toString(),currentUser.getDisplayName(),0);
+                            Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,mUserViewModel.getUid(),mUserViewModel.getUserImageUrl().toString(),mUserViewModel.getDisplayName(),0);
                             addPost(post);
                             enable_input(true);
                         }
@@ -283,4 +280,19 @@ public class MainActivity extends AppCompatActivity {
             openGallery();
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!mUserViewModel.isSigned())
+            updateUI();
+
+
+    }
+
+    private void updateUI() {
+        startActivity(loginActivity);
+        finish();
+    }
+
 }

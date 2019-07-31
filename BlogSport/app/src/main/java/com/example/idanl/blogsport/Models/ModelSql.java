@@ -11,6 +11,7 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.idanl.blogsport.Adapters.MyApplication;
+import com.example.idanl.blogsport.Models.Entities.Post;
 
 import java.util.ArrayList;
 import java.util.List;

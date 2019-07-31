@@ -3,15 +3,15 @@ package com.example.idanl.blogsport.Models;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
+
+import com.example.idanl.blogsport.Models.Entities.Post;
 
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 @Dao
 interface PostDao{
@@ -28,10 +28,12 @@ interface PostDao{
     List<Post> getAllPosts();
 
     @Query("SELECT * FROM POST_TABLE WHERE postKey = :postKey")
-    Post getPost(int postKey);
+    Post getPost(String postKey);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertPosts(List<Post> posts);
+
+
 }
 
 public class PostAsyncDao{
@@ -94,6 +96,25 @@ public class PostAsyncDao{
             }
 
 
+        }.execute();
+    }
+    public static void getPost(final String postKey, final  PostRepository.GetPostListener listener)
+    {
+        new AsyncTask<String, String, Post>(){
+
+            @Override
+            protected Post doInBackground(String... strings) {
+                return ModelSql.db.postDao().getPost(postKey);
+
+            }
+
+            @Override
+            protected void onPostExecute(Post post) {
+                super.onPostExecute(post);
+                Log.d("SQL", "Get post id "+postKey);
+                listener.onResponse(post);
+
+            }
         }.execute();
     }
 }

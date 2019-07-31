@@ -1,10 +1,12 @@
-package com.example.idanl.blogsport.Models;
+package com.example.idanl.blogsport.Models.ViewModel;
 
 import android.app.Application;
-import android.graphics.Bitmap;
 import android.net.Uri;
 
 import androidx.lifecycle.AndroidViewModel;
+
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.PostRepository;
 
 public class PostInsertViewModel extends AndroidViewModel {
     public PostInsertViewModel(Application application) {

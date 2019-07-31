@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +34,9 @@ import com.bumptech.glide.Glide;
 import com.example.idanl.blogsport.Adapters.CommentAdapter;
 import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Models.Comment;
-import com.example.idanl.blogsport.Models.Post;
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModel;
+import com.example.idanl.blogsport.Models.ViewModel.PostListViewModel;
 import com.example.idanl.blogsport.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.LongToIntFunction;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,12 +59,7 @@ import java.util.function.LongToIntFunction;
 public class PostDetailsFragment extends Fragment {
 
     boolean mProcessLike;
-    FirebaseAuth mAuth;
-    FirebaseUser mUser;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReferenceLikes;
-    DatabaseReference databaseReferenceComment;
-    DatabaseReference postRef ;
+    PostDetailsViewModel mPostDetailsViewModel;
     TextView tv_Title,tv_SecondTitle,tv_Category,tv_Content,tv_Date_Writer, tv_Likes;
     ImageView image_Like_btn, image_post;
     CircleImageView  image_profile_comment, image_profile;
@@ -72,6 +70,7 @@ public class PostDetailsFragment extends Fragment {
     ConstraintLayout layout;
     CommentAdapter commentAdapter;
     List<Comment> comments;
+    String postKey;
     Post p;
     public PostDetailsFragment() {
         // Required empty public constructor
@@ -100,26 +99,25 @@ public class PostDetailsFragment extends Fragment {
         progressBar = v.findViewById(R.id.post_d_progressBar);
         commentRv = v.findViewById(R.id.post_d_commet_RV);
         assert getArguments() != null;
-        p = PostDetailsFragmentArgs.fromBundle(getArguments()).getPost();
-        if (p==null)
-        {
+        postKey = PostDetailsFragmentArgs.fromBundle(getArguments()).getPostKey();
 
-                Navigation.findNavController(v).popBackStack();
+        mPostDetailsViewModel = ViewModelProviders.of(this).get(PostDetailsViewModel.class);
 
-        }
         layout.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         comment_ProgressBar.setVisibility(View.INVISIBLE);
         btn_add_comment.setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.floatingActionButton).setVisibility(View.INVISIBLE);
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        databaseReferenceLikes = firebaseDatabase.getReference().child("Likes");
-        databaseReferenceComment = firebaseDatabase.getReference().child("Comments");
-        postRef = firebaseDatabase.getReference().child("Posts").child(p.getPostKey());
+        mPostDetailsViewModel.getPost(postKey).observe(this, new Observer<Post>() {
+            @Override
+            public void onChanged(Post post) {
+                p = post;
+                populate();
+            }
+        });
 
-        image_Like_btn.setOnClickListener(new View.OnClickListener() {
+
+        /*image_Like_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mProcessLike = true;
@@ -204,16 +202,14 @@ public class PostDetailsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
         initRVcomment();
 
 
         return v;
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+    public void populate()
+    {
         if (p!=null)
         {
             tv_Title.setText(p.getTitle());
@@ -231,12 +227,17 @@ public class PostDetailsFragment extends Fragment {
             progressBar.setVisibility(View.INVISIBLE);
 
         }
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+
 
 
     }
 
     private void initRVcomment() {
-        commentRv.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
+        /*commentRv.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
         commentRv.setAdapter(commentAdapter);
         DatabaseReference refComments = databaseReferenceComment.child(p.getPostKey());
         refComments.addValueEventListener(new ValueEventListener() {
@@ -257,7 +258,7 @@ public class PostDetailsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
     @Override

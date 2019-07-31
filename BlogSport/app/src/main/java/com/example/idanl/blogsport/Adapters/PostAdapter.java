@@ -1,6 +1,5 @@
 package com.example.idanl.blogsport.Adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +8,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.idanl.blogsport.Fragments.HomeFragmentDirections;
-import com.example.idanl.blogsport.Models.Post;
+import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.R;
 
-import java.io.Console;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -88,7 +85,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    HomeFragmentDirections.ActionHomeFragmentToPostDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(mPosts.get(position));
+                    HomeFragmentDirections.ActionHomeFragmentToPostDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(mPosts.get(position).getPostKey());
                     Navigation.findNavController(v)
                             .navigate(action);
                 }

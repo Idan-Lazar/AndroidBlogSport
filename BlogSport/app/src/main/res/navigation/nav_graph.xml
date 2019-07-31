@@ -17,6 +17,10 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_homeFragment_to_loginActivity"
+            app:destination="@+id/loginActivity"
+            app:popUpTo="@+id/loginActivity" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -34,7 +38,17 @@
         android:label="Post"
         tools:layout="@layout/fragment_post_details">
         <argument
-            android:name="post"
-            app:argType="com.example.idanl.blogsport.Models.Post" />
+            android:name="postKey"
+            app:argType="string" />
     </fragment>
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.example.idanl.blogsport.Activities.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+    <activity
+        android:id="@+id/registerActivity"
+        android:name="com.example.idanl.blogsport.Activities.RegisterActivity"
+        android:label="activity_registar"
+        tools:layout="@layout/activity_registar" />
 </navigation>

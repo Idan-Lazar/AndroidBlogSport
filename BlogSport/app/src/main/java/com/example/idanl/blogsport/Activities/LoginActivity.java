@@ -3,6 +3,8 @@ package com.example.idanl.blogsport.Activities;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,26 +13,25 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.idanl.blogsport.Models.UserReposiroty;
+import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 import com.example.idanl.blogsport.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
+
+@SuppressWarnings("ConstantConditions")
 public class LoginActivity extends AppCompatActivity {
-
+    private UserViewModel mUserViewModel;
     private EditText userMail, userPassword;
     private Button btnLogin;
     private ProgressBar loginProgress;
-    private FirebaseAuth mAuth;
+
     private Intent mainActivity;
     private ImageView loginPhoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
         userMail = findViewById(R.id.logingMail);
         userPassword = findViewById(R.id.loginPassword);
@@ -46,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
-        mAuth = FirebaseAuth.getInstance();
+
         mainActivity = new Intent(this, MainActivity.class);
         loginProgress.setVisibility(View.INVISIBLE);
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -73,35 +74,33 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signIn(String mail, String password) {
-        mAuth.signInWithEmailAndPassword(mail, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mUserViewModel.signIn(mail, password, new UserReposiroty.SignInListener() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful())
-                {
-                    loginProgress.setVisibility(View.VISIBLE);
-                    btnLogin.setVisibility(View.INVISIBLE);
-                    updateUI();
-                }
-                else
-                {
-                    showMessage(task.getException().getMessage());
-                    btnLogin.setVisibility(View.VISIBLE);
-                    loginProgress.setVisibility(View.INVISIBLE);
+            public void onSuccess() {
+                loginProgress.setVisibility(View.VISIBLE);
+                btnLogin.setVisibility(View.INVISIBLE);
+                updateUI();
+            }
 
-                }
+            @Override
+            public void onFailer(Exception e) {
+                showMessage(e.getMessage());
+                btnLogin.setVisibility(View.VISIBLE);
+                loginProgress.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onOffiline() {
+                showMessage("No Internet Connection!");
             }
         });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user!=null)
-        {
-           updateUI();
 
-        }
     }
 
     private void updateUI() {

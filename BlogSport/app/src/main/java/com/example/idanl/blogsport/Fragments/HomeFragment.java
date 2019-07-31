@@ -4,8 +4,8 @@ package com.example.idanl.blogsport.Fragments;
 import android.os.Bundle;
 
 import com.example.idanl.blogsport.Adapters.PostAdapter;
-import com.example.idanl.blogsport.Models.Post;
-import com.example.idanl.blogsport.Models.PostListViewModel;
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.ViewModel.PostListViewModel;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;

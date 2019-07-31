@@ -1,45 +1,44 @@
 package com.example.idanl.blogsport.Models;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.load.model.Model;
 import com.example.idanl.blogsport.Adapters.MyApplication;
-import com.google.android.gms.tasks.Continuation;
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
-import com.google.firebase.firestore.util.Listener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.Executor;
 
 public class ModelFirebase {
+    final public static ModelFirebase instance = new ModelFirebase();
     FirebaseFirestore db;
-
+    FirebaseAuth mAuth;
 
 
     public ModelFirebase() {
@@ -48,12 +47,9 @@ public class ModelFirebase {
                 .setPersistenceEnabled(false).build();
 
         db.setFirestoreSettings(settings);
+        mAuth = FirebaseAuth.getInstance();
     }
 
-    public void cancellGetAllStudents()
-    {
-
-    }
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager)MyApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -113,26 +109,97 @@ public class ModelFirebase {
         }
 
     }
-/*
-    interface GetStudentListener {
-        void onComplete(Student student);
+
+    public void signUp(String email, String password, final UserReposiroty.SignUpListener listener) {
+        if (isNetworkConnected()) {
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    listener.onSuccess();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onFailer(e);
+                }
+            });}
+        else
+        {
+            listener.onOffiline();
+        }
     }
 
-    public void getStudent(String id, final GetStudentListener listener) {
-        db.collection("students").document(id).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot snapshot = task.getResult();
-                            Student student = snapshot.toObject(Student.class);
-                            listener.onComplete(student);
-                            return;
+    public void updateUserInfo(final String userName, final Uri pickerImgUri, final FirebaseUser currentUser, final UserReposiroty.UpdateUserInfoListener listener)
+    {
+        if (isNetworkConnected()) {
+            saveUserImage(pickerImgUri, new PostRepository.SaveImageListener() {
+                @Override
+                public void onComplete(String uri) {
+                    UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(userName).setPhotoUri(pickerImgUri).build();
+                    currentUser.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                listener.onSuccess();
+                            }
                         }
-                        listener.onComplete(null);
-                    }
-                });
-    }*/
+                    });
+                }
+
+                @Override
+                public void onOffline() {
+                    listener.onOffiline();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    listener.onFailer(e);
+                }
+            });
+        }
+        else{
+            listener.onOffiline();
+        }
+    }
+
+
+
+
+
+    public void getPost(String id, final PostRepository.GetPostListener listener) {
+        if (isNetworkConnected())
+        {
+            db.collection("Posts").document(id).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot snapshot = task.getResult();
+                                if (snapshot != null)
+                                {
+                                    Post post = snapshot.toObject(Post.class);
+                                    if (post!=null)
+                                    {
+                                        listener.onResponse(post);
+                                    }
+                                    else
+                                    {
+                                        listener.onError();
+                                    }
+                                }
+
+
+                            }
+
+                        }
+                    });
+        }
+        else {
+            listener.onError();
+        }
+
+
+    }
 
 
 
@@ -190,5 +257,66 @@ public class ModelFirebase {
         {
             listener.onOffline();
         }
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return mAuth.getCurrentUser();
+    }
+
+    public void signIn(String email, String password, final UserReposiroty.SignInListener listener) {
+        if (isNetworkConnected()) {
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful())
+                        listener.onSuccess();
+                    else
+                    {
+                        listener.onFailer(task.getException());
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onFailer(e);
+                }
+            });
+        }
+        else
+        {
+            listener.onOffiline();
+        }
+    }
+
+    public boolean isSigned() {
+        if(mAuth.getCurrentUser() != null)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public Uri getUserImageUrl() {
+        if(getCurrentUser()!=null)
+        {
+            return getCurrentUser().getPhotoUrl();
+        }
+        return null;
+    }
+
+    public String getUid() {
+        if(getCurrentUser()!=null)
+        {
+            return getCurrentUser().getUid();
+        }
+        return null;
+    }
+
+    public String getDisplayName() {
+        if(getCurrentUser()!=null)
+        {
+            return getCurrentUser().getDisplayName();
+        }
+        return null;
     }
 }

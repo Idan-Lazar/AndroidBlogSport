@@ -8,15 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.idanl.blogsport.Fragments.HomeFragmentDirections;
 import com.example.idanl.blogsport.Models.Comment;
-import com.example.idanl.blogsport.Models.Post;
 import com.example.idanl.blogsport.R;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder> {
