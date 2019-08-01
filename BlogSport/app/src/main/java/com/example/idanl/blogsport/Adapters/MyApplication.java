@@ -1,5 +1,6 @@
 package com.example.idanl.blogsport.Adapters;
 
+import android.app.Application;
 import android.content.Context;
 
 import androidx.multidex.MultiDexApplication;

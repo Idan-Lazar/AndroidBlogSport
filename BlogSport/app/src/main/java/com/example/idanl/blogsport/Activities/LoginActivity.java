@@ -91,7 +91,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onOffiline() {
+
                 showMessage("No Internet Connection!");
+                btnLogin.setVisibility(View.VISIBLE);
+                loginProgress.setVisibility(View.INVISIBLE);
             }
         });
 

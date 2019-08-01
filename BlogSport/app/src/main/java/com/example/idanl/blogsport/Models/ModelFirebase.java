@@ -169,30 +169,14 @@ public class ModelFirebase {
     public void getPost(String id, final PostRepository.GetPostListener listener) {
         if (isNetworkConnected())
         {
-            db.collection("Posts").document(id).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot snapshot = task.getResult();
-                                if (snapshot != null)
-                                {
-                                    Post post = snapshot.toObject(Post.class);
-                                    if (post!=null)
-                                    {
-                                        listener.onResponse(post);
-                                    }
-                                    else
-                                    {
-                                        listener.onError();
-                                    }
-                                }
-
-
-                            }
-
-                        }
-                    });
+            db.collection("Posts").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot doc, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    assert doc != null;
+                    Post post = doc.toObject(Post.class);
+                    listener.onResponse(post);
+                }
+            });
         }
         else {
             listener.onError();

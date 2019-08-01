@@ -3,6 +3,7 @@ import static java.lang.Math.toIntExact;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
@@ -36,17 +37,12 @@ import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Models.Comment;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModel;
+import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModelFactory;
 import com.example.idanl.blogsport.Models.ViewModel.PostListViewModel;
 import com.example.idanl.blogsport.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -98,23 +94,31 @@ public class PostDetailsFragment extends Fragment {
         layout = v.findViewById(R.id.post_d_layout);
         progressBar = v.findViewById(R.id.post_d_progressBar);
         commentRv = v.findViewById(R.id.post_d_commet_RV);
+
+        //ViewModel And LiveData Init
         assert getArguments() != null;
         postKey = PostDetailsFragmentArgs.fromBundle(getArguments()).getPostKey();
-
-        mPostDetailsViewModel = ViewModelProviders.of(this).get(PostDetailsViewModel.class);
+        Activity me = this.getActivity();
+        PostDetailsViewModelFactory factory;
+        if (me != null){
+            factory = new PostDetailsViewModelFactory(this.getActivity().getApplication(),postKey);
+            mPostDetailsViewModel = ViewModelProviders.of(this, factory).get(PostDetailsViewModel.class);
+            //LiveData Observer Any change is updated
+            mPostDetailsViewModel.getPost().observe(this, new Observer<Post>() {
+                @Override
+                public void onChanged(Post post) {
+                    p = post;
+                    populate();
+                }
+            });
+        }
 
         layout.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         comment_ProgressBar.setVisibility(View.INVISIBLE);
         btn_add_comment.setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.floatingActionButton).setVisibility(View.INVISIBLE);
-        mPostDetailsViewModel.getPost(postKey).observe(this, new Observer<Post>() {
-            @Override
-            public void onChanged(Post post) {
-                p = post;
-                populate();
-            }
-        });
+
 
 
         /*image_Like_btn.setOnClickListener(new View.OnClickListener() {
