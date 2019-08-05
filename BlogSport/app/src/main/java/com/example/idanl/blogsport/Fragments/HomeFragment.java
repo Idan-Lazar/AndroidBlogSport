@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.example.idanl.blogsport.Adapters.PostAdapter;
 import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.ViewModel.PostListViewModel;
 
 import androidx.annotation.Nullable;
@@ -65,14 +66,21 @@ public class HomeFragment extends Fragment {
         postRecyclerView.setAdapter(adapter);
 
         mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
+
         mPostListViewModel.getAllPosts().observe(this, new Observer<List<Post>>() {
+
+
                     @Override
                     public void onChanged(@Nullable final List<Post> posts){
+                        postRecyclerView.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.VISIBLE);
                         adapter.setPosts(posts);
                         postRecyclerView.setAdapter(adapter);
                         postRecyclerView.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.INVISIBLE);
                     }
+
+
                 });
 
         return v;

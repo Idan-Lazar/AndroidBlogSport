@@ -4,8 +4,12 @@ import static java.lang.Math.toIntExact;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -21,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,22 +37,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Adapters.CommentAdapter;
 import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Models.Comment;
 import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.User;
+import com.example.idanl.blogsport.Models.UserRepository;
 import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModel;
 import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModelFactory;
 import com.example.idanl.blogsport.Models.ViewModel.PostListViewModel;
+import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 import com.example.idanl.blogsport.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,6 +72,7 @@ public class PostDetailsFragment extends Fragment {
 
     boolean mProcessLike;
     PostDetailsViewModel mPostDetailsViewModel;
+    UserViewModel mUserViewModel;
     TextView tv_Title,tv_SecondTitle,tv_Category,tv_Content,tv_Date_Writer, tv_Likes;
     ImageView image_Like_btn, image_post;
     CircleImageView  image_profile_comment, image_profile;
@@ -67,6 +84,7 @@ public class PostDetailsFragment extends Fragment {
     CommentAdapter commentAdapter;
     List<Comment> comments;
     String postKey;
+    User u;
     Post p;
     public PostDetailsFragment() {
         // Required empty public constructor
@@ -99,9 +117,10 @@ public class PostDetailsFragment extends Fragment {
         assert getArguments() != null;
         postKey = PostDetailsFragmentArgs.fromBundle(getArguments()).getPostKey();
         Activity me = this.getActivity();
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         PostDetailsViewModelFactory factory;
         if (me != null){
-            factory = new PostDetailsViewModelFactory(this.getActivity().getApplication(),postKey);
+            factory = new PostDetailsViewModelFactory(me.getApplication(),postKey);
             mPostDetailsViewModel = ViewModelProviders.of(this, factory).get(PostDetailsViewModel.class);
             //LiveData Observer Any change is updated
             mPostDetailsViewModel.getPost().observe(this, new Observer<Post>() {
@@ -111,7 +130,10 @@ public class PostDetailsFragment extends Fragment {
                     populate();
                 }
             });
+            Log.d("URI", "onCreateView: "+ mUserViewModel.getCurrentUser().getUserImage());
+
         }
+
 
         layout.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
@@ -212,26 +234,33 @@ public class PostDetailsFragment extends Fragment {
 
         return v;
     }
-    public void populate()
-    {
-        if (p!=null)
-        {
+    public void populate() {
+        if (p != null) {
             tv_Title.setText(p.getTitle());
             tv_SecondTitle.setText(p.getSecond_title());
             tv_Content.setText(p.getContent());
             tv_Category.setText(p.getCategory());
             tv_Likes.setText(Integer.toString(p.getLikes()));
-            tv_Date_Writer.setText("Published at "+" By "+ p.getUserName());
-            Glide.with(this).load(p.getUserPhoto()).into(image_profile);
-            Glide.with(this).load(p.getUserPhoto()).into(image_profile_comment);
-            Glide.with(this).load(p.getPicture()).into(image_post);
-
-
+            tv_Date_Writer.setText("Published at " +timestamptoString(p.getTimestamp())+ " By " + p.getUserName());
+            Glide.with(this).load(p.getUserImage()).into(image_profile).waitForLayout();
+            Glide.with(this).load(p.getPicture()).into(image_post).waitForLayout();
+            Glide.with(MyApplication.getContext()).load(mUserViewModel.getUserImageUrl()).into(image_profile_comment).waitForLayout();
             layout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
 
+
+
         }
     }
+
+
+
+
+
+    private void loadCurrentUserImage(User user) {
+        Glide.with(this).load(user.getUserImage()).into(image_profile_comment);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -276,12 +305,10 @@ public class PostDetailsFragment extends Fragment {
         getActivity().findViewById(R.id.floatingActionButton).setVisibility(View.VISIBLE);
     }
 
-    private String timestamptoString(long timestamp)
-
+    private String timestamptoString(Date timestamp)
     {
-        Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
-        calendar.setTimeInMillis(timestamp);
-        String date = DateFormat.format("dd-MM-yyyy",calendar).toString();
+
+        String date = DateFormat.format("dd-MM-yyyy",timestamp).toString();
         return date;
 
     }

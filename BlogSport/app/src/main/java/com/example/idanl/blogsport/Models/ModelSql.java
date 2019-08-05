@@ -8,19 +8,24 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.idanl.blogsport.Adapters.MyApplication;
+import com.example.idanl.blogsport.Models.Entities.Converters;
 import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Database(entities = {Post.class}, version = 20, exportSchema = false)
+@Database(entities = {Post.class, User.class}, version = 26, exportSchema = false)
+@TypeConverters({Converters.class})
 abstract class AppLocalDbRepository extends RoomDatabase {
     public abstract PostDao postDao();
-
+    public abstract UserDao userDao();
     private static volatile AppLocalDbRepository INSTANCE;
 
     static AppLocalDbRepository getDatabase(final Context context) {
@@ -45,39 +50,14 @@ abstract class AppLocalDbRepository extends RoomDatabase {
                 @Override
                 public void onOpen (@NonNull SupportSQLiteDatabase db){
                     super.onOpen(db);
-                    new PopulateDbAsync(INSTANCE).execute();
                 }
             };
 
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final PostDao mDao;
-
-        PopulateDbAsync(AppLocalDbRepository db) {
-            mDao = db.postDao();
-        }
-
-        @Override
-        protected Void doInBackground(final Void... params) {
-            //mDao.deleteAll();
-            List<Post> list = new ArrayList<>();
-            Post p = new Post("Cake","gg","gfdgg","ggfdfg","https://firebasestorage.googleapis.com/v0/b/blogsport-29b88.appspot.com/o/blog_images%2Fimage%3A39363?alt=media&token=156c6edd-0826-4ed3-9833-f5dcecc66073","rmz2xeA9jJSorDxVsdjh0ePrSgQ2","https://firebasestorage.googleapis.com/v0/b/blogsport-29b88.appspot.com/o/users_photos%2Fimage%3A22100?alt=media&token=8e8f1f5f-4528-4df3-b0cf-587d8e0667e2","idan",3);
-            p.setPostKey("ggfdgfdfgdfc");
-            //mDao.insert(p);
-            list.add(p);
-            p = new Post("Cake","gg","gfdgg","ggfdfg","https://firebasestorage.googleapis.com/v0/b/blogsport-29b88.appspot.com/o/blog_images%2Fimage%3A39363?alt=media&token=156c6edd-0826-4ed3-9833-f5dcecc66073","rmz2xeA9jJSorDxVsdjh0ePrSgQ2","https://firebasestorage.googleapis.com/v0/b/blogsport-29b88.appspot.com/o/users_photos%2Fimage%3A22100?alt=media&token=8e8f1f5f-4528-4df3-b0cf-587d8e0667e2","idan",3);
-            p.setPostKey("gfdgfdhfds4r55d");
-            list.add(p);
-            //mDao.insert(p);
-            //mDao.insertPosts(list);
-            Log.d("SQL", "insert first 2 rows");
-            return null;
-        }
-    }
 }
 
 public class ModelSql {
-        static public AppLocalDbRepository db = AppLocalDbRepository.getDatabase(MyApplication.getContext());
+        static AppLocalDbRepository db = AppLocalDbRepository.getDatabase(MyApplication.getContext());
 
 
 }

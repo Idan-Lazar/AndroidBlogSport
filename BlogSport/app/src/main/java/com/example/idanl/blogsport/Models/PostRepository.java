@@ -8,13 +8,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.PostAndUser;
+import com.example.idanl.blogsport.Models.Entities.User;
 
 import java.util.List;
 
 public class PostRepository {
     final public static PostRepository instance = new PostRepository();
     private PostDao mPostDao;
-    ModelFirebase modelFirebase = ModelFirebase.instance;
+    ModelFirebasePost modelFirebase = ModelFirebasePost.instance;
 
     PostRepository() {
         AppLocalDbRepository db = ModelSql.db;
@@ -89,7 +92,7 @@ public class PostRepository {
     {
         PostAsyncDao.getPost(postKey, listener);
     }
-    PostListLiveData postListLiveData = new PostListLiveData();
+    private PostListLiveData postListLiveData = new PostListLiveData();
 
 
 

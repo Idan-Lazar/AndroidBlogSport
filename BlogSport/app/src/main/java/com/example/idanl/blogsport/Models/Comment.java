@@ -1,12 +1,22 @@
 package com.example.idanl.blogsport.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+
 import com.google.firebase.database.ServerValue;
 
-public class Comment {
-    private String content, uid, uimg, uname;
-    private Object timestamp;
+import java.util.Date;
 
-    public Comment(String content, String uid, String uimg, String uname, Object timestamp) {
+@Entity
+public class Comment {
+    @NonNull
+    private String content, uid, uimg, uname;
+
+    private Date timestamp;
+
+    @Ignore
+    public Comment(String content, String uid, String uimg, String uname, Date timestamp) {
         this.content = content;
         this.uid = uid;
         this.uimg = uimg;
@@ -14,12 +24,12 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
+
     public Comment(String content, String uid, String uimg, String uname) {
         this.content = content;
         this.uid = uid;
         this.uimg = uimg;
         this.uname = uname;
-        this.timestamp = ServerValue.TIMESTAMP;
     }
 
     public Comment() {

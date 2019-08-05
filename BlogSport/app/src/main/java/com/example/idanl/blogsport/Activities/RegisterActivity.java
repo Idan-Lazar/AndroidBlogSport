@@ -20,8 +20,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.idanl.blogsport.Models.Entities.User;
-import com.example.idanl.blogsport.Models.UserReposiroty;
+import com.example.idanl.blogsport.Models.Entities.UserAuth;
+import com.example.idanl.blogsport.Models.UserRepository;
 import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 import com.example.idanl.blogsport.R;
 
@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user = null;
+                UserAuth userAuth = null;
                 boolean flag = true;
                 enableInputs(false);
                 btn.setVisibility(View.INVISIBLE);
@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                 final String password = userPassword.getText().toString();
                 final String password2 = userPassword2.getText().toString();
                 try {
-                    user = new User(name,email,password,password2,pickerImgUri);
+                    userAuth = new UserAuth(name,email,password,password2,pickerImgUri);
                     flag = true;
                 } catch (Exception e) {
                     showMessage(e.getMessage());
@@ -93,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 }
                 if (flag){
-                    CreateUserAccount(user);
+                    CreateUserAccount(userAuth);
                 }
 
             }
@@ -119,14 +119,14 @@ public class RegisterActivity extends AppCompatActivity {
             userPassword.setEnabled(flag);
             userPassword2.setEnabled(flag);
         }
-        private void CreateUserAccount( final User user){
+        private void CreateUserAccount( final UserAuth userAuth){
 
-            mUserViewModel.signUp(user.getEmail(),user.getPassword(), new UserReposiroty.SignUpListener() {
+            mUserViewModel.signUp(userAuth.getEmail(), userAuth.getPassword(), new UserRepository.SignUpListener() {
                 @Override
                 public void onSuccess() {
-                    mUserViewModel.updateUserInfo(user.getName(), user.getUserImage(), new UserReposiroty.UpdateUserInfoListener() {
+                    mUserViewModel.updateUserInfo(userAuth.getName(), userAuth.getUserImage(), new UserRepository.UpdateUserInfoListener() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(String uri) {
                             showMessage("Account Created");
                             enableInputs(true);
                             showMessage("Register Complete");

@@ -1,22 +1,33 @@
 package com.example.idanl.blogsport.Adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.idanl.blogsport.Fragments.HomeFragmentDirections;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> {
 
@@ -31,6 +42,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_post_item, parent,false);
+        
         MyViewHolder viewHolder = new MyViewHolder(view);
         return viewHolder;
     }
@@ -46,22 +58,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
         return mPosts.size();
     }
 
-
+    
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final  MyViewHolder holder, int position) {
 
+        holder.layout.setVisibility(View.INVISIBLE);
+        final Post post = mPosts.get(position);
+        holder.tvWriterName.setText(post.getUserName());
+        Glide.with(MyApplication.getContext()).load(post.getUserImage()).into(holder.imgPostProfile);
+        holder.tvTitle.setText(post.getTitle());
+        holder.tvSecondTitle.setText(post.getSecond_title());
+        holder.tvCategory.setText(post.getCategory());
+        Glide.with(MyApplication.getContext()).load(post.getPicture()).listener(new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                holder.progressBar.setVisibility(View.INVISIBLE);
+                return false;
+            }
 
-        Post selected = mPosts.get(position);
-
-        holder.tvTitle.setText(selected.getTitle());
-        holder.tvSecondTitle.setText(selected.getSecond_title());
-        holder.tvCategory.setText(selected.getCategory());
-        holder.tvWriterName.setText(selected.getUserName());
-        Glide.with(MyApplication.getContext()).load(selected.getPicture()).into(holder.imgPost);
-        Glide.with(MyApplication.getContext()).load(selected.getUserPhoto()).into(holder.imgPostProfile);
-
-
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                holder.progressBar.setVisibility(View.INVISIBLE);
+                holder.layout.setVisibility(View.VISIBLE);
+                return false;
+            }
+        }).into(holder.imgPost);
 
     }
 
@@ -71,9 +93,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
         TextView tvTitle, tvSecondTitle, tvCategory, tvWriterName;
         ImageView imgPost, imgPostProfile;
+        ProgressBar progressBar;
+        ConstraintLayout layout;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            layout = itemView.findViewById(R.id.layout_post_item);
+            progressBar = itemView.findViewById(R.id.post_item_progress);
             tvTitle = itemView.findViewById(R.id.post_item_title);
             tvSecondTitle = itemView.findViewById(R.id.post_item_sec_title);
             tvCategory = itemView.findViewById(R.id.post_item_category);

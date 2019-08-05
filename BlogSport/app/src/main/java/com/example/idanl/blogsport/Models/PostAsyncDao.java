@@ -10,7 +10,10 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.Post;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -27,11 +30,11 @@ interface PostDao{
     @Query("SELECT * FROM POST_TABLE")
     List<Post> getAllPosts();
 
-    @Query("SELECT * FROM POST_TABLE WHERE postKey = :postKey")
+    @Query("SELECT * FROM POST_TABLE WHERE post_table.postKey = :postKey ")
     Post getPost(String postKey);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insertPosts(List<Post> posts);
+    void insertPosts(List<Post> posts);
 
 
 }
@@ -43,14 +46,15 @@ public class PostAsyncDao{
 
             @Override
             protected List<Post> doInBackground(String... strings) {
-               List<Post> list = ModelSql.db.postDao().getAllPosts();
+                List<Post> list = ModelSql.db.postDao().getAllPosts();
                return list;
             }
 
             @Override
             protected void onPostExecute(List<Post> data) {
                 super.onPostExecute(data);
-                listener.onResponse(data);
+                if (data!=null)
+                    listener.onResponse(data);
 
             }
         }.execute();
@@ -105,14 +109,20 @@ public class PostAsyncDao{
             @Override
             protected Post doInBackground(String... strings) {
                 return ModelSql.db.postDao().getPost(postKey);
-
             }
 
             @Override
             protected void onPostExecute(Post post) {
                 super.onPostExecute(post);
-                Log.d("SQL", "Get post id "+postKey);
-                listener.onResponse(post);
+                if (post!=null)
+                {
+                    Log.d("SQL", "Get post id "+postKey);
+                    listener.onResponse(post);
+                }
+                else
+                {
+                    listener.onError();
+                }
 
             }
         }.execute();

@@ -2,37 +2,49 @@ package com.example.idanl.blogsport.Models.Entities;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+import androidx.navigation.Navigator;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
-
+@Entity(tableName = "user_table")
 public class User {
-
-    String name;
-    String email;
-    String password;
-    Uri userImage;
-
-    public User(String name, String email, String password, String password2, Uri userImage) throws Exception {
-        setName(name);
-        setEmail(email);
-        setPassword(password);
-        vailPass(password2);
-        setUserImage(userImage);
+    @Ignore
+    public User() {
     }
 
-    private void vailPass(String password2) throws Exception {
-        if (!password.equals(password2)){
-            throw new Exception("Password Is Not Match!");
-        }
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "userId")
+    private String uid;
+
+    private String name;
+    @NonNull
+    private String email;
+
+    private String userImage;
+    public User(@NonNull String uid,@NonNull String email, String name,  String userImage) {
+        this.uid = uid;
+        this.name = name;
+        this.email = email;
+        this.userImage = userImage;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) throws Exception {
-        if (name.isEmpty())
-            throw new Exception("Name is not filled!");
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -40,29 +52,15 @@ public class User {
         return email;
     }
 
-    public void setEmail(String email) throws Exception {
-        if (email.isEmpty())
-            throw new Exception("Email is not filled!");
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) throws Exception {
-        if (password.isEmpty())
-            throw new Exception("Password is not filled!");
-        this.password = password;
-    }
-
-    public Uri getUserImage() {
+    public String getUserImage() {
         return userImage;
     }
 
-    public void setUserImage(Uri userImage) throws Exception {
-        if (userImage==null)
-            throw new Exception("User's Image is not selected!");
+    public void setUserImage(String userImage) {
         this.userImage = userImage;
     }
 

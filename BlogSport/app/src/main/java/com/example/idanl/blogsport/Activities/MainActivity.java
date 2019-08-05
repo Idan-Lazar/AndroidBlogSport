@@ -1,5 +1,6 @@
 package com.example.idanl.blogsport.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -20,6 +21,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Messenger;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,9 +42,12 @@ import com.example.idanl.blogsport.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.example.idanl.blogsport.Adapters.MyApplication.getContext;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 popAddPost.show();
 
             }
@@ -132,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
         popupSecondTitle.setEnabled(b);
 
     }
+
+
+
+
     private void iniPopup() {
         popAddPost = new Dialog(this);
 
@@ -153,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
         popupAddBtn.setVisibility(View.VISIBLE);
         popupClickProgress.setVisibility(View.INVISIBLE);
         //load Current user Image
-
-        Glide.with(MainActivity.this).load(mUserViewModel.getUserImageUrl()).into(popupUserImage);
+        Log.d("URI", "iniPopup: "+ mUserViewModel.getUserImageUrl());
+        Glide.with(this).load(mUserViewModel.getUserImageUrl()).into(popupUserImage).waitForLayout();
         pickerImgUri = null;
 
         //Add ost Listner
@@ -172,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                     mPostInsertViewModel.saveBlogImage(pickerImgUri, new PostRepository.SaveImageListener() {
                         @Override
                         public void onComplete(String imageDownloadLink) {
-                            Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,mUserViewModel.getUid(),mUserViewModel.getUserImageUrl().toString(),mUserViewModel.getDisplayName(),0);
+                            Post post = new Post(popupTitle.getText().toString(),popupSecondTitle.getText().toString(),popupCategory.getText().toString(), popupContent.getText().toString(),imageDownloadLink,mUserViewModel.getUid(),0,mUserViewModel.getUserImageUrl().toString(),mUserViewModel.getDisplayName());
                             addPost(post);
                             enable_input(true);
                         }

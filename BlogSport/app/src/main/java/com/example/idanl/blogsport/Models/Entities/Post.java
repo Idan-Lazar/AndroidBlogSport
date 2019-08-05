@@ -1,25 +1,27 @@
 package com.example.idanl.blogsport.Models.Entities;
 
-import android.util.Log;
-
-import com.google.firebase.database.Exclude;
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.ServerTimestamp;
+import com.google.firebase.firestore.model.value.ServerTimestampValue;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Map;
+import java.util.Date;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.NavType;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "post_table")
-public class Post  implements Serializable {
+@Entity(tableName = "post_table", indices = {@Index("userId")})
+public class Post implements Serializable {
 
     @PrimaryKey
+    @ColumnInfo(name = "postKey")
     @NonNull
     private String postKey;
 
@@ -30,7 +32,7 @@ public class Post  implements Serializable {
         return postKey;
     }
 
-    public void setPostKey(String postKey) {
+    public void setPostKey(@NonNull String postKey) {
         this.postKey = postKey;
     }
 
@@ -45,17 +47,38 @@ public class Post  implements Serializable {
     @NonNull
     private String userId;
     @NonNull
-    private int likes;
-    @NonNull
     private String userName;
+
     @NonNull
-    private String userPhoto;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(@NonNull String userName) {
+        this.userName = userName;
+    }
+
+    @NonNull
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(@NonNull String userImage) {
+        this.userImage = userImage;
+    }
+
+    @NonNull
+    private String userImage;
+
+    @NonNull
+    private int likes;
 
     /*
     To change the timestap into data time
     * */
-    @Ignore
-    private Object timestamp;
+    @NonNull
+    @ServerTimestamp private Date timestamp;
+
 
 
     public int getLikes() {
@@ -67,7 +90,7 @@ public class Post  implements Serializable {
 
     }
 
-    public Post(String title, String second_title, String category, String content, String picture, String userId, String userPhoto, String userName, int likes) {
+    public Post(@NonNull String title, @NonNull String second_title, @NonNull String category, @NonNull String content, @NonNull String picture, @NonNull String userId, @NonNull int likes, @NonNull String userImage, @NonNull String userName ) {
         this.likes = likes;
         this.title = title;
         this.second_title = second_title;
@@ -75,16 +98,15 @@ public class Post  implements Serializable {
         this.content = content;
         this.picture = picture;
         this.userId = userId;
-        this.userPhoto = userPhoto;
-        this.timestamp = ServerValue.TIMESTAMP;
+        this.userImage = userImage;
         this.userName = userName;
     }
 
 
-    public Object getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(Object timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -92,13 +114,7 @@ public class Post  implements Serializable {
     public Post() {
     }
 
-    public String getUserName() {
-        return userName;
-    }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     public String getTitle() {
         return title;
@@ -120,13 +136,9 @@ public class Post  implements Serializable {
         return picture;
     }
 
-    public String getUserId() {
-        return userId;
-    }
 
-    public String getUserPhoto() {
-        return userPhoto;
-    }
+
+
 
 
     public void setTitle(String title) {
@@ -149,13 +161,12 @@ public class Post  implements Serializable {
         this.picture = picture;
     }
 
-    public void setUserId(String userId) {
+    @NonNull
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(@NonNull String userId) {
         this.userId = userId;
     }
-
-    public void setUserPhoto(String userPhoto) {
-        this.userPhoto = userPhoto;
-    }
-
-
 }

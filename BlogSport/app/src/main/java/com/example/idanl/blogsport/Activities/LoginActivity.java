@@ -1,7 +1,7 @@
 package com.example.idanl.blogsport.Activities;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.idanl.blogsport.Models.UserReposiroty;
+import com.example.idanl.blogsport.Models.UserRepository;
 import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 import com.example.idanl.blogsport.R;
 
@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signIn(String mail, String password) {
-        mUserViewModel.signIn(mail, password, new UserReposiroty.SignInListener() {
+        mUserViewModel.signIn(mail, password, new UserRepository.SignInListener() {
             @Override
             public void onSuccess() {
                 loginProgress.setVisibility(View.VISIBLE);
