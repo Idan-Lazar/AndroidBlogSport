@@ -13,6 +13,7 @@ import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.idanl.blogsport.Adapters.MyApplication;
+import com.example.idanl.blogsport.Models.Entities.Comment;
 import com.example.idanl.blogsport.Models.Entities.Converters;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.User;
@@ -21,11 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Database(entities = {Post.class, User.class}, version = 26, exportSchema = false)
+@Database(entities = {Post.class, User.class, Comment.class}, version = 29, exportSchema = false)
 @TypeConverters({Converters.class})
 abstract class AppLocalDbRepository extends RoomDatabase {
     public abstract PostDao postDao();
     public abstract UserDao userDao();
+    public abstract CommentDao commentDao();
     private static volatile AppLocalDbRepository INSTANCE;
 
     static AppLocalDbRepository getDatabase(final Context context) {

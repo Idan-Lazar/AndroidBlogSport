@@ -1,20 +1,14 @@
 package com.example.idanl.blogsport.Fragments;
-import static java.lang.Math.toIntExact;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentProvider;
-import android.content.ContentResolver;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -25,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -37,46 +33,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.idanl.blogsport.Activities.MainActivity;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.idanl.blogsport.Adapters.CommentAdapter;
 import com.example.idanl.blogsport.Adapters.MyApplication;
-import com.example.idanl.blogsport.Models.Comment;
-import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.CommentRepository;
+import com.example.idanl.blogsport.Models.Entities.Comment;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.User;
-import com.example.idanl.blogsport.Models.UserRepository;
+import com.example.idanl.blogsport.Models.PostRepository;
+import com.example.idanl.blogsport.Models.ViewModel.CommentListViewModel;
+import com.example.idanl.blogsport.Models.ViewModel.CommentListViewModelFactory;
 import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModel;
 import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModelFactory;
-import com.example.idanl.blogsport.Models.ViewModel.PostListViewModel;
+import com.example.idanl.blogsport.Models.ViewModel.PostUpdateViewModel;
 import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 import com.example.idanl.blogsport.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PostDetailsFragment extends Fragment {
 
-    boolean mProcessLike;
+
     PostDetailsViewModel mPostDetailsViewModel;
+    CommentListViewModel mcommentListViewModel;
     UserViewModel mUserViewModel;
-    TextView tv_Title,tv_SecondTitle,tv_Category,tv_Content,tv_Date_Writer, tv_Likes;
-    ImageView image_Like_btn, image_post;
+    TextView tv_Title,tv_SecondTitle,tv_Category,tv_Content,tv_Date_Writer;
+    ImageView image_post;
     CircleImageView  image_profile_comment, image_profile;
     Button btn_add_comment;
+    PostUpdateViewModel mPostUpdateViewModel;
     EditText et_comment;
     RecyclerView commentRv ;
     ProgressBar progressBar, comment_ProgressBar;
@@ -84,13 +77,49 @@ public class PostDetailsFragment extends Fragment {
     CommentAdapter commentAdapter;
     List<Comment> comments;
     String postKey;
+    AlertDialog dialog;
+
     User u;
     Post p;
     public PostDetailsFragment() {
-        // Required empty public constructor
+
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.actionbar_menu, menu);
+
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        switch (id){
+            case (R.id.edit_action):
+                assert getView() != null;
+                Navigation.findNavController(getView()).navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToPostEditFragment3(p));
+                break;
+            case (R.id.delete_action):
+                dialog.show();
+
+
+
+        }
+        return true;
+    }
+
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,8 +130,6 @@ public class PostDetailsFragment extends Fragment {
         tv_Category = v.findViewById(R.id.post_d_category);
         tv_Content = v.findViewById(R.id.post_d_content);
         tv_Date_Writer = v.findViewById(R.id.post_d_writer_date);
-        tv_Likes = v.findViewById(R.id.post_d_like_num);
-        image_Like_btn = v.findViewById(R.id.post_d_like_btn);
         image_post = v.findViewById(R.id.post_d_image);
         image_profile_comment = v.findViewById(R.id.post_d_user_profile_comment);
         image_profile = v.findViewById(R.id.post_d_user_profile);
@@ -112,13 +139,17 @@ public class PostDetailsFragment extends Fragment {
         layout = v.findViewById(R.id.post_d_layout);
         progressBar = v.findViewById(R.id.post_d_progressBar);
         commentRv = v.findViewById(R.id.post_d_commet_RV);
+        commentAdapter = new CommentAdapter(getContext());
+        dialog = AskOption();
 
         //ViewModel And LiveData Init
         assert getArguments() != null;
         postKey = PostDetailsFragmentArgs.fromBundle(getArguments()).getPostKey();
         Activity me = this.getActivity();
+        mPostUpdateViewModel = ViewModelProviders.of(this).get(PostUpdateViewModel.class);
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         PostDetailsViewModelFactory factory;
+        CommentListViewModelFactory cFactory;
         if (me != null){
             factory = new PostDetailsViewModelFactory(me.getApplication(),postKey);
             mPostDetailsViewModel = ViewModelProviders.of(this, factory).get(PostDetailsViewModel.class);
@@ -127,10 +158,24 @@ public class PostDetailsFragment extends Fragment {
                 @Override
                 public void onChanged(Post post) {
                     p = post;
+                    if(mUserViewModel.getUid().equals(p.getUserId()))
+                        setHasOptionsMenu(true);
+
+                    else
+                        setHasOptionsMenu(false);
+
                     populate();
                 }
             });
-            Log.d("URI", "onCreateView: "+ mUserViewModel.getCurrentUser().getUserImage());
+            cFactory = new CommentListViewModelFactory(me.getApplication(),postKey);
+            mcommentListViewModel = ViewModelProviders.of(this,cFactory).get(CommentListViewModel.class);
+            me.findViewById(R.id.floatingActionButton).setVisibility(View.INVISIBLE);
+            mcommentListViewModel.getComments().observe(this, new Observer<List<Comment>>() {
+                @Override
+                public void onChanged(List<Comment> comments) {
+                    commentAdapter.setmData(comments);
+                }
+            });
 
         }
 
@@ -139,7 +184,7 @@ public class PostDetailsFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         comment_ProgressBar.setVisibility(View.INVISIBLE);
         btn_add_comment.setVisibility(View.VISIBLE);
-        getActivity().findViewById(R.id.floatingActionButton).setVisibility(View.INVISIBLE);
+
 
 
 
@@ -152,12 +197,12 @@ public class PostDetailsFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(mProcessLike) {
-                                if (dataSnapshot.child(p.getPostKey().toString()).hasChild(mAuth.getCurrentUser().getUid())) {
-                                    databaseReferenceLikes.child(p.getPostKey().toString()).child(mAuth.getCurrentUser().getUid()).removeValue();
+                                if (dataSnapshot.child(p.getPostKey().toString()).hasChild(mAuth.getCurrentUser().getUserId())) {
+                                    databaseReferenceLikes.child(p.getPostKey().toString()).child(mAuth.getCurrentUser().getUserId()).removeValue();
                                     image_Like_btn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ffffff")));
                                     mProcessLike = false;
                                 } else {
-                                    databaseReferenceLikes.child(p.getPostKey().toString()).child(mAuth.getCurrentUser().getUid()).setValue("Random_Value");
+                                    databaseReferenceLikes.child(p.getPostKey().toString()).child(mAuth.getCurrentUser().getUserId()).setValue("Random_Value");
                                     image_Like_btn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
                                     mProcessLike = false;
                                 }
@@ -171,64 +216,46 @@ public class PostDetailsFragment extends Fragment {
                     });
                 }
 
-        });
+        });*/
 
                 btn_add_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         comment_ProgressBar.setVisibility(View.VISIBLE);
                         btn_add_comment.setVisibility(View.INVISIBLE);
-                        DatabaseReference refComments = databaseReferenceComment.child(p.getPostKey()).push();
                         String comment_content = et_comment.getText().toString();
-                        String uid = p.getUserId();
-                        String uname = p.getUserName();
-                        String uimg = p.getUserPhoto();
-                        Comment c = new Comment(comment_content, uid, uimg, uname);
-
-                        refComments.setValue(c).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        String uid = mUserViewModel.getUid();
+                        String uname = mUserViewModel.getDisplayName();
+                        String uimg = mUserViewModel.getUserImageUrl().toString();
+                        Comment c = new Comment(comment_content,p.getPostKey(),uid,uimg,uname);
+                        mcommentListViewModel.addComment(c, new CommentRepository.InsertCommentListener() {
                             @Override
-                            public void onSuccess(Void aVoid) {
+                            public void onComplete(boolean success) {
                                 showMessage("comment added");
                                 et_comment.setText("");
                                 comment_ProgressBar.setVisibility(View.INVISIBLE);
                                 btn_add_comment.setVisibility(View.VISIBLE);
+                                mcommentListViewModel.notifyChange();
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
+
                             @Override
-                            public void onFailure(@NonNull Exception e) {
+                            public void onError(Exception e) {
                                 showMessage("Fail to add comment " + e.getMessage());
                                 comment_ProgressBar.setVisibility(View.INVISIBLE);
                                 btn_add_comment.setVisibility(View.VISIBLE);
                             }
+
+                            @Override
+                            public void onOffline() {
+                                showMessage("No Internet Connection!");
+                                comment_ProgressBar.setVisibility(View.INVISIBLE);
+                                btn_add_comment.setVisibility(View.VISIBLE);
+                            }
                         });
+
                     }
                 });
 
-        databaseReferenceLikes.addValueEventListener(new ValueEventListener() {
-            @TargetApi(Build.VERSION_CODES.N)
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long num = dataSnapshot.child(p.getPostKey()).getChildrenCount();
-                tv_Likes.setText(Long.toString(num));
-                p.setLikes(toIntExact(num));
-                postRef.child("likes").setValue(num);
-                if (dataSnapshot.child(p.getPostKey().toString()).hasChild(mAuth.getCurrentUser().getUid())) {
-                    image_Like_btn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
-                } else {
-
-                    image_Like_btn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ffffff")));
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
         initRVcomment();
 
 
@@ -236,17 +263,50 @@ public class PostDetailsFragment extends Fragment {
     }
     public void populate() {
         if (p != null) {
+            layout.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
             tv_Title.setText(p.getTitle());
             tv_SecondTitle.setText(p.getSecond_title());
             tv_Content.setText(p.getContent());
             tv_Category.setText(p.getCategory());
-            tv_Likes.setText(Integer.toString(p.getLikes()));
             tv_Date_Writer.setText("Published at " +timestamptoString(p.getTimestamp())+ " By " + p.getUserName());
-            Glide.with(this).load(p.getUserImage()).into(image_profile).waitForLayout();
-            Glide.with(this).load(p.getPicture()).into(image_post).waitForLayout();
-            Glide.with(MyApplication.getContext()).load(mUserViewModel.getUserImageUrl()).into(image_profile_comment).waitForLayout();
-            layout.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
+            final Fragment f = this;
+            Glide.with(this).load(p.getPicture()).listener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    Glide.with(f).load(p.getUserImage()).listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            Glide.with(MyApplication.getContext()).load(mUserViewModel.getUserImageUrl()).listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    layout.setVisibility(View.VISIBLE);
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    return false;
+                                }
+                            }).into(image_profile_comment);
+                            return false;
+                        }
+                    }).into(image_profile);
+                    return false;
+                }
+            }).into(image_post);
+
 
 
 
@@ -270,28 +330,61 @@ public class PostDetailsFragment extends Fragment {
     }
 
     private void initRVcomment() {
-        /*commentRv.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
+        commentRv.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
         commentRv.setAdapter(commentAdapter);
-        DatabaseReference refComments = databaseReferenceComment.child(p.getPostKey());
-        refComments.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                comments = new ArrayList<>();
-                for (DataSnapshot snapshot: dataSnapshot.getChildren())
-                {
 
-                    Comment c = snapshot.getValue(Comment.class);
-                    comments.add(c);
-                }
-                commentAdapter = new CommentAdapter(getContext(),comments);
-                commentRv.setAdapter(commentAdapter);
-            }
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+    private AlertDialog AskOption()
+    {
+        return new AlertDialog.Builder(this.getContext())
+                //set message, title, and icon
+                .setTitle("Delete")
+                .setMessage("Do you want to delete the post?")
+                .setIcon(R.drawable.delete_icon)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 
-            }
-        });*/
+                    public void onClick(DialogInterface dialog1, int whichButton) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        layout.setVisibility(View.INVISIBLE);
+                        p.setDeleted(true);
+                        mPostUpdateViewModel.updatePost(p, new PostRepository.InsertPostListener() {
+                            @Override
+                            public void onComplete(boolean success) {
+                                showMessage("Post Deleted!");
+                                Navigation.findNavController(getView()).navigateUp();
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                showMessage(e.getMessage());
+                                layout.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onOffline() {
+                                showMessage("No Internet Connection!");
+                                layout.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        });
+                        dialog1.dismiss();
+                    }
+
+                })
+
+
+
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog1, int which) {
+
+                        dialog1.dismiss();
+
+                    }
+                })
+                .create();
+
     }
 
     @Override
@@ -303,6 +396,11 @@ public class PostDetailsFragment extends Fragment {
     public void onStop() {
         super.onStop();
         getActivity().findViewById(R.id.floatingActionButton).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private String timestamptoString(Date timestamp)

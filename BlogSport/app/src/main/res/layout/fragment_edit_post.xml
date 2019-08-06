@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.EditPostFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_post_edit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_title_des_post_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sec_title_des_post_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Second Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/post_edit_title" />
+
+        <TextView
+            android:id="@+id/tv_category_des_post_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Category"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/post_edit_second_title" />
+
+        <TextView
+            android:id="@+id/tv_content_des_post_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/post_edit_category" />
+
+        <EditText
+            android:id="@+id/post_edit_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints=""
+            android:background="@drawable/popup_edittext_style"
+            android:ems="10"
+            android:hint="Title"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_des_post_edit" />
+
+        <EditText
+            android:id="@+id/post_edit_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/popup_edittext_style"
+            android:ems="4"
+            android:hint="Content"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:singleLine="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content_des_post_edit" />
+
+        <EditText
+            android:id="@+id/post_edit_second_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints=""
+            android:background="@drawable/popup_edittext_style"
+            android:ems="10"
+            android:hint="Second Title"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_sec_title_des_post_edit" />
+
+        <EditText
+            android:id="@+id/post_edit_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/popup_edittext_style"
+            android:ems="10"
+            android:hint="Category"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_category_des_post_edit" />
+
+        <Button
+            android:id="@+id/post_edit_send"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/reg_btn_style"
+            android:text="Update"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="193dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/post_edit_content">
+
+            <ImageView
+                android:id="@+id/image_post_post_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#414141"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/photo_icon" />
+
+            <View
+                android:id="@+id/gradient_shape_view_post_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/trending_gradient_shape"
+                android:visibility="visible" />
+        </FrameLayout>
+
+        <ProgressBar
+            android:id="@+id/post_edit_progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_style"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/post_edit_send"
+            app:layout_constraintEnd_toEndOf="@+id/post_edit_send"
+            app:layout_constraintStart_toStartOf="@+id/post_edit_send"
+            app:layout_constraintTop_toTopOf="@+id/post_edit_send" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,11 +7,13 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.Post;
+import com.example.idanl.blogsport.Models.Entities.PostAllComments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +26,18 @@ interface PostDao{
     @Query("DELETE FROM post_table")
     void deleteAll();
 
-    @Query("DELETE FROM POST_TABLE WHERE postKey = :postKey ")
+    @Query("DELETE FROM POST_TABLE WHERE id = :postKey ")
     void deletePost(int postKey);
 
     @Query("SELECT * FROM POST_TABLE")
     List<Post> getAllPosts();
 
-    @Query("SELECT * FROM POST_TABLE WHERE post_table.postKey = :postKey ")
+    @Query("SELECT * FROM POST_TABLE WHERE post_table.id = :postKey ")
     Post getPost(String postKey);
+
+    @Query("SELECT * FROM POST_TABLE WHERE id = :postKey")
+    @Transaction
+    PostAllComments getPostAllComments(String postKey);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPosts(List<Post> posts);
@@ -70,7 +76,11 @@ public class PostAsyncDao{
                 return posts.size();
             }
 
-
+            @Override
+            protected void onPostExecute(Integer integer) {
+                super.onPostExecute(integer);
+                Log.d("Insert posts", "Insert posts "+integer);
+            }
         }.execute();
     }
     public static void insertPost(final Post post)

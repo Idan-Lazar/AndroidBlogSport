@@ -8,9 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.idanl.blogsport.Models.Comment;
+import com.example.idanl.blogsport.Models.Entities.Comment;
 import com.example.idanl.blogsport.R;
 
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -19,13 +20,24 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder> {
 
 
-        Context mContext;
-        List<Comment> mData;
+        private Context mContext;
 
-        public CommentAdapter(Context mContext, List<Comment> mData) {
+    public List<Comment> getmData() {
+        return mData;
+    }
+
+    public void setmData(List<Comment> mData) {
+        this.mData = mData;
+        notifyDataSetChanged();
+    }
+
+    private List<Comment> mData;
+
+        public CommentAdapter(Context mContext) {
             this.mContext = mContext;
-            this.mData = mData;
+            this.mData = Collections.emptyList();
         }
+
 
         @NonNull
         @Override
@@ -37,13 +49,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
-
             Comment selected = mData.get(position);
-
             holder.tvContent.setText(selected.getContent());
-            holder.tvWriterName.setText(selected.getUname());
-            Glide.with(mContext).load(selected.getUimg()).into(holder.imgCommentUserProfile);
+            holder.tvWriterName.setText(selected.getUserName());
+            Glide.with(mContext).load(selected.getUserImage()).into(holder.imgCommentUserProfile);
 
 
 

@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="276" />
-                            <option name="y" value="410" />
+                            <option name="x" value="287" />
+                            <option name="y" value="356" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -51,8 +51,29 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="610" />
-                            <option name="y" value="101" />
+                            <option name="x" value="480" />
+                            <option name="y" value="-267" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_postDetailsFragment_to_postEditFragment3">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="postEditFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1163" />
+                            <option name="y" value="87" />
                           </Point>
                         </option>
                       </LayoutPositions>

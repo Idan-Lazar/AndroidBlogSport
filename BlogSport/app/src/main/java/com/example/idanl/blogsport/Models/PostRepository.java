@@ -1,6 +1,5 @@
 package com.example.idanl.blogsport.Models;
 
-import android.app.Application;
 import android.net.Uri;
 import android.util.Log;
 
@@ -8,9 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.idanl.blogsport.Models.Entities.Post;
-import com.example.idanl.blogsport.Models.Entities.Post;
-import com.example.idanl.blogsport.Models.Entities.PostAndUser;
-import com.example.idanl.blogsport.Models.Entities.User;
 
 import java.util.List;
 
@@ -19,6 +15,12 @@ public class PostRepository {
     private PostDao mPostDao;
     ModelFirebasePost modelFirebase = ModelFirebasePost.instance;
 
+    interface changeLikePostListener {
+        void onLike();
+        void onDislike();
+        void onOffline();
+        void onError(Exception e);
+    }
     PostRepository() {
         AppLocalDbRepository db = ModelSql.db;
 
@@ -27,7 +29,7 @@ public class PostRepository {
         @Override
         protected void onActive() {
             super.onActive();
-            modelFirebase.getAllPosts(new GetAllPostsListener() {
+            modelFirebase.activateGetAllPostsListener(new GetAllPostsListener() {
                 @Override
                 public void onResponse(List<Post> list) {
                     Log.d("TAG","FB data = " + list.size() );
@@ -56,6 +58,7 @@ public class PostRepository {
         @Override
         protected void onInactive() {
             super.onInactive();
+            modelFirebase.removeGetAllPostsListener();
             Log.d("TAG","cancellGetAllStudents");
         }
         public PostListLiveData() {
@@ -74,7 +77,10 @@ public class PostRepository {
         }
     }
 
-
+    public void updatePost (Post p, InsertPostListener listener)
+    {
+        modelFirebase.updatePost(p,listener);
+    }
     public interface GetPostListener{
         void onResponse(Post p);
         void onError();

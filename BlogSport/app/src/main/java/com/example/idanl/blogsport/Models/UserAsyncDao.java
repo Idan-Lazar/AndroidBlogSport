@@ -20,13 +20,13 @@ interface UserDao{
     @Query("DELETE FROM user_table")
     void deleteAll();
 
-    @Query("DELETE FROM user_table WHERE userId = :userKey ")
+    @Query("DELETE FROM user_table WHERE id = :userKey ")
     void deleteUser(int userKey);
 
     @Query("SELECT * FROM user_table")
     List<User> getAllUsers();
 
-    @Query("SELECT * FROM user_table WHERE userId = :userKey")
+    @Query("SELECT * FROM user_table WHERE id = :userKey")
     User getUser(String userKey);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

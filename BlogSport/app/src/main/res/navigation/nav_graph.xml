@@ -40,6 +40,9 @@
         <argument
             android:name="postKey"
             app:argType="string" />
+        <action
+            android:id="@+id/action_postDetailsFragment_to_postEditFragment3"
+            app:destination="@id/postEditFragment" />
     </fragment>
     <activity
         android:id="@+id/loginActivity"
@@ -51,4 +54,13 @@
         android:name="com.example.idanl.blogsport.Activities.RegisterActivity"
         android:label="activity_registar"
         tools:layout="@layout/activity_registar" />
+    <fragment
+        android:id="@+id/postEditFragment"
+        android:name="com.example.idanl.blogsport.Fragments.EditPostFragment"
+        android:label="Edit"
+        tools:layout="@layout/fragment_edit_post" >
+        <argument
+            android:name="post"
+            app:argType="com.example.idanl.blogsport.Models.Entities.Post" />
+    </fragment>
 </navigation>

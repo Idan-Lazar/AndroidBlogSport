@@ -3,6 +3,7 @@ package com.example.idanl.blogsport.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.SubMenuBuilder;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
@@ -24,6 +25,7 @@ import android.os.Bundle;
 import android.os.Messenger;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         //init
         loginActivity = new Intent(this, LoginActivity.class);
@@ -92,11 +95,15 @@ public class MainActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this,R.id.main_navhost_frag);
         BottomNavigationView bottomNavigationView =
                 findViewById(R.id.bottomNavigationView);
+
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
+        androidx.appcompat.widget.Toolbar mToolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(mToolbar);
         //if i want the title will be the same
         NavigationUI.setupActionBarWithNavController(this,navController);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle("BlogSport");
+        mToolbar.setTitle("BlogSport");
+
+
 
     }
 

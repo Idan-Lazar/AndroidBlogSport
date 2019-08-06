@@ -18,7 +18,7 @@ import java.util.List;
 
 public class PostDetailsViewModel extends AndroidViewModel {
 
-    private LiveData<Post> data;
+    private PostDetailLiveData data;
     PostDetailsViewModel(@NonNull Application application, String postKey) {
         super(application);
         data = new PostDetailLiveData(application,postKey);
@@ -85,7 +85,10 @@ public class PostDetailsViewModel extends AndroidViewModel {
             Log.d("TAG","cancellGetPost");
         }
     }
-
+    public void refresh()
+    {
+        this.data.onActive();
+    }
     public LiveData<Post> getPost()
     {
        return data;

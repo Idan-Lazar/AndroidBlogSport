@@ -54,7 +54,6 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$rootProject.roomVersion"
 
 
-
 // Lifecycle components
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$rootProject.archLifecycleVersion"

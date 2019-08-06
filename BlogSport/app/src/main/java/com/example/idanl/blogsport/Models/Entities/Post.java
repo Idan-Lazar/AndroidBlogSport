@@ -21,7 +21,7 @@ import androidx.room.PrimaryKey;
 public class Post implements Serializable {
 
     @PrimaryKey
-    @ColumnInfo(name = "postKey")
+    @ColumnInfo(name = "id")
     @NonNull
     private String postKey;
 
@@ -70,13 +70,22 @@ public class Post implements Serializable {
     @NonNull
     private String userImage;
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    @NonNull
+    @Ignore
+    private boolean deleted = false;
     @NonNull
     private int likes;
-
     /*
     To change the timestap into data time
     * */
-    @NonNull
     @ServerTimestamp private Date timestamp;
 
 

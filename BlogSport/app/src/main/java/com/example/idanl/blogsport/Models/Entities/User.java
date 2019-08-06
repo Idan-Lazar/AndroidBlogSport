@@ -17,7 +17,7 @@ public class User {
 
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "userId")
+    @ColumnInfo(name = "id")
     private String uid;
 
     private String name;
