@@ -2,16 +2,25 @@ package com.example.idanl.blogsport.Models;
 
 
 import android.net.Uri;
+import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.User;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserRepository {
 
     final public static UserRepository instance = new UserRepository();
     ModelFirebaseUser modelFirebaseUser = ModelFirebaseUser.instance;
+
     private User currentUser;
+    private UserListLiveData userListLiveData = new UserListLiveData();
+
 
     public User getCurrentUser() {
         return currentUser;
@@ -68,6 +77,63 @@ public class UserRepository {
     {
         UserAsyncDao.getUser(postKey, listener);
     }
+
+    class UserListLiveData extends MutableLiveData<List<User>> {
+        @Override
+        protected void onActive() {
+            super.onActive();
+            modelFirebaseUser.activateGetAllUsersListener(new UserRepository.GetAllUsersListener() {
+                @Override
+                public void onResponse(List<User> list) {
+                    Log.d("TAG","FB data = " + list.size() );
+                    setValue(list);
+                    UserAsyncDao.deleteAll();
+                    UserAsyncDao.insertUsers(list);
+
+                }
+                public void onError()
+                {
+                    UserAsyncDao.getAllUsers(new UserRepository.GetAllUsersListener() {
+                        @Override
+                        public void onResponse(List<User> list) {
+                            setValue(list);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+                }
+            });
+
+        }
+        @Override
+        protected void onInactive() {
+            super.onInactive();
+            modelFirebaseUser.removeGetAllUsersListener();
+            Log.d("TAG","cancellGetAllStudents");
+        }
+        public UserListLiveData() {
+            super();
+            UserAsyncDao.getAllUsers(new UserRepository.GetAllUsersListener() {
+                @Override
+                public void onResponse(List<User> list) {
+                    setValue(list);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        }
+    }
+    public LiveData<List<User>> getmAllUsers() {
+        return userListLiveData;
+        
+    }
+
     public interface SignInListener{
         void onSuccess();
         void onFailer(Exception e);

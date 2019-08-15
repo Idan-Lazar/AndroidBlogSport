@@ -55,7 +55,7 @@ public class ModelFirebasePost extends ModelFirebase {
 
     void activateGetAllPostsListener(final PostRepository.GetAllPostsListener listener) {
 
-        this.setGetAllPostsListener(db.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        this.setGetAllPostsListener(db.collectionGroup("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 Log.d("FIrebase", "onEvent: firebase getall posts");
@@ -64,7 +64,7 @@ public class ModelFirebasePost extends ModelFirebase {
                     listener.onError();
                 }
                 else {
-                    db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    db.collectionGroup("Posts").orderBy("timestamp", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             final LinkedList<Post> data = new LinkedList<>();
@@ -143,7 +143,8 @@ public class ModelFirebasePost extends ModelFirebase {
         }
         else
         {
-            db.collection("Posts").document(p.getPostKey()).set(p).addOnSuccessListener(new OnSuccessListener<Void>() {
+            String userId = p.getUserId();
+            db.collection("Users").document(userId).collection("Posts").document(p.getPostKey()).set(p).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     listener.onComplete(true);
@@ -160,10 +161,10 @@ public class ModelFirebasePost extends ModelFirebase {
 
 
 
-     void getPost(String id, final PostRepository.GetPostListener listener) {
+     void getPost(String postKey, String userId, final PostRepository.GetPostListener listener) {
         if (isNetworkConnected())
         {
-            db.collection("Posts").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            db.collection("Users").document(userId).collection("Posts").document(postKey).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@javax.annotation.Nullable DocumentSnapshot doc, @javax.annotation.Nullable FirebaseFirestoreException e) {
                     assert doc != null;

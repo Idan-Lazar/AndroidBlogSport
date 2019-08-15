@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,6 +20,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
@@ -27,11 +30,69 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import javax.annotation.Nullable;
 
 public class ModelFirebaseUser extends ModelFirebase {
     final public static ModelFirebaseUser instance = new ModelFirebaseUser();
+    private ListenerRegistration getAllUsersListener;
+
+    public ListenerRegistration getGetAllUsersListener() {
+        return getAllUsersListener;
+    }
+
+    public void setGetAllUsersListener(ListenerRegistration getAllUsersListener) {
+        this.getAllUsersListener = getAllUsersListener;
+    }
+
+    void activateGetAllUsersListener(final UserRepository.GetAllUsersListener listener) {
+
+        this.setGetAllUsersListener(db.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@com.google.firebase.database.annotations.Nullable QuerySnapshot queryDocumentSnapshots, @com.google.firebase.database.annotations.Nullable FirebaseFirestoreException e) {
+                Log.d("FIrebase", "onEvent: firebase getall users");
+                if (!isNetworkConnected())
+                {
+                    listener.onError();
+                }
+                else {
+                    db.collection("Users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            final LinkedList<User> data = new LinkedList<>();
+                            if (!isNetworkConnected())
+                            {
+                                listener.onError();
+                            }
+                            else {
+                                for (DocumentSnapshot doc : queryDocumentSnapshots
+                                ) {
+                                    User p = doc.toObject(User.class);
+                                    data.add(p);
+
+
+                                }
+                                listener.onResponse(data);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onError();
+                        }
+                    });
+
+                }
+
+
+            }
+        }));
+    }
+    void removeGetAllUsersListener()
+    {
+        this.getAllUsersListener.remove();
+    }
 
     public void saveUserImage(Uri pickerImgUri, final UserRepository.SaveImageListener listener) {
         if (isNetworkConnected())
@@ -273,6 +334,7 @@ public class ModelFirebaseUser extends ModelFirebase {
 
 
     }
+
 
 
 }

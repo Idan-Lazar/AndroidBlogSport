@@ -95,9 +95,9 @@ public class PostRepository {
         void onError();
     }
 
-    public void getPostFirebase(String postKey, GetPostListener listener)
+    public void getPostFirebase(String postKey, String userId, GetPostListener listener)
     {
-        modelFirebase.getPost(postKey, listener);
+        modelFirebase.getPost(postKey , userId, listener);
     }
     public void getPostDao(String postKey, GetPostListener listener)
     {

@@ -28,11 +28,6 @@
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
-        android:id="@+id/writersFragment"
-        android:name="com.example.idanl.blogsport.Fragments.WritersFragment"
-        android:label="fragment_writers"
-        tools:layout="@layout/fragment_writers" />
-    <fragment
         android:id="@+id/postDetailsFragment"
         android:name="com.example.idanl.blogsport.Fragments.PostDetailsFragment"
         android:label="Post"
@@ -63,4 +58,9 @@
             android:name="post"
             app:argType="com.example.idanl.blogsport.Models.Entities.Post" />
     </fragment>
+    <fragment
+        android:id="@+id/writersFragment"
+        android:name="com.example.idanl.blogsport.Fragments.UserListFragment"
+        android:label="Writers"
+        tools:layout="@layout/fragment_user_list" />
 </navigation>
