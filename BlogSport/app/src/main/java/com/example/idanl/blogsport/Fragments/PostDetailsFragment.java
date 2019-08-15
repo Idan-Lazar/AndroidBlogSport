@@ -4,16 +4,21 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -39,6 +44,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.idanl.blogsport.Adapters.CommentAdapter;
 import com.example.idanl.blogsport.Adapters.MyApplication;
+import com.example.idanl.blogsport.Helper.CommentItemTouchHelper;
 import com.example.idanl.blogsport.Models.CommentRepository;
 import com.example.idanl.blogsport.Models.Entities.Comment;
 import com.example.idanl.blogsport.Models.Entities.Post;
@@ -51,15 +57,18 @@ import com.example.idanl.blogsport.Models.ViewModel.PostDetailsViewModelFactory;
 import com.example.idanl.blogsport.Models.ViewModel.PostUpdateViewModel;
 import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 import com.example.idanl.blogsport.R;
+import com.google.android.material.snackbar.Snackbar;
 
 
 import java.util.Date;
 import java.util.List;
 
+import static androidx.recyclerview.widget.DividerItemDecoration.*;
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PostDetailsFragment extends Fragment {
+public class PostDetailsFragment extends Fragment implements CommentItemTouchHelper.CommentItemTouchHelperListener {
 
 
     PostDetailsViewModel mPostDetailsViewModel;
@@ -75,8 +84,10 @@ public class PostDetailsFragment extends Fragment {
     ProgressBar progressBar, comment_ProgressBar;
     ConstraintLayout layout;
     CommentAdapter commentAdapter;
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallBack ;
     List<Comment> comments;
     String postKey;
+    NestedScrollView rootLayout;
     AlertDialog dialog;
 
     User u;
@@ -140,6 +151,7 @@ public class PostDetailsFragment extends Fragment {
         progressBar = v.findViewById(R.id.post_d_progressBar);
         commentRv = v.findViewById(R.id.post_d_commet_RV);
         commentAdapter = new CommentAdapter(getContext());
+        rootLayout = v.findViewById(R.id.rootLayout);
         dialog = AskOption();
 
         //ViewModel And LiveData Init
@@ -158,6 +170,12 @@ public class PostDetailsFragment extends Fragment {
                 @Override
                 public void onChanged(Post post) {
                     p = post;
+                    assert getView() != null;
+                    if(p.isDeleted())
+                    {
+                        Navigation.findNavController(getView()).navigateUp();
+                        showMessage("Post deleted!");
+                    }
                     if(mUserViewModel.getUid().equals(p.getUserId()))
                         setHasOptionsMenu(true);
 
@@ -186,38 +204,6 @@ public class PostDetailsFragment extends Fragment {
         btn_add_comment.setVisibility(View.VISIBLE);
 
 
-
-
-        /*image_Like_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mProcessLike = true;
-                databaseReferenceLikes.addValueEventListener(new ValueEventListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(mProcessLike) {
-                                if (dataSnapshot.child(p.getPostKey().toString()).hasChild(mAuth.getCurrentUser().getUserId())) {
-                                    databaseReferenceLikes.child(p.getPostKey().toString()).child(mAuth.getCurrentUser().getUserId()).removeValue();
-                                    image_Like_btn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ffffff")));
-                                    mProcessLike = false;
-                                } else {
-                                    databaseReferenceLikes.child(p.getPostKey().toString()).child(mAuth.getCurrentUser().getUserId()).setValue("Random_Value");
-                                    image_Like_btn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
-                                    mProcessLike = false;
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-        });*/
-
                 btn_add_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -231,7 +217,7 @@ public class PostDetailsFragment extends Fragment {
                         mcommentListViewModel.addComment(c, new CommentRepository.InsertCommentListener() {
                             @Override
                             public void onComplete(boolean success) {
-                                showMessage("comment added");
+                                showMessage("Comment added");
                                 et_comment.setText("");
                                 comment_ProgressBar.setVisibility(View.INVISIBLE);
                                 btn_add_comment.setVisibility(View.VISIBLE);
@@ -331,7 +317,11 @@ public class PostDetailsFragment extends Fragment {
 
     private void initRVcomment() {
         commentRv.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
+        commentRv.setItemAnimator(new DefaultItemAnimator());
+        commentRv.addItemDecoration(new DividerItemDecoration(MyApplication.getContext(), VERTICAL));
         commentRv.setAdapter(commentAdapter);
+        itemTouchHelperCallBack = new CommentItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(commentRv);
 
     }
 
@@ -351,8 +341,7 @@ public class PostDetailsFragment extends Fragment {
                         mPostUpdateViewModel.updatePost(p, new PostRepository.InsertPostListener() {
                             @Override
                             public void onComplete(boolean success) {
-                                showMessage("Post Deleted!");
-                                Navigation.findNavController(getView()).navigateUp();
+
                             }
 
                             @Override
@@ -412,5 +401,63 @@ public class PostDetailsFragment extends Fragment {
     }
     private void showMessage(String message) {
         Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction, final int position) {
+        if (viewHolder instanceof CommentAdapter.MyViewHolder)
+        {
+            String id = commentAdapter.getItem(viewHolder.getAdapterPosition()).getCommentKey();
+            final Comment c = commentAdapter.getItem(viewHolder.getAdapterPosition());
+            final int deletedIndex = viewHolder.getAdapterPosition();
+            mcommentListViewModel.removeComment(c, new CommentRepository.RemoveCommentListener() {
+                @Override
+                public void onRemove() {
+                    commentAdapter.removeItem(deletedIndex);
+                    Snackbar snackbar = Snackbar.make(rootLayout, "Your comment removed!", Snackbar.LENGTH_SHORT);
+                    snackbar.setAction("UNDO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mcommentListViewModel.addbackComment(c, new CommentRepository.InsertCommentListener() {
+                                @Override
+                                public void onComplete(boolean success) {
+                                    showMessage("Comment added back");
+                                    commentAdapter.restoreItem(c,deletedIndex);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    showMessage("Error  "+ e.getMessage());
+                                }
+
+                                @Override
+                                public void onOffline() {
+                                    showMessage("No Connection!");
+                                }
+                            });
+                        }
+                    });
+                    snackbar.setActionTextColor(Color.YELLOW);
+                    snackbar.show();
+                }
+
+                @Override
+                public void onError(Exception x) {
+                    showMessage("Error! "+ x.getMessage());
+                    commentAdapter.removeItem(deletedIndex);
+                    commentAdapter.restoreItem(c,deletedIndex);
+                }
+
+                @Override
+                public void onOffline() {
+                    showMessage("No Connection!");
+                    commentAdapter.removeItem(deletedIndex);
+                    commentAdapter.restoreItem(c,deletedIndex);
+
+
+                }
+            });
+
+        }
     }
 }

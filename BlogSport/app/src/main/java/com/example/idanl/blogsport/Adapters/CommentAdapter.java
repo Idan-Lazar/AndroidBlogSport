@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -63,19 +64,38 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
             return mData.size();
         }
 
+        public Comment getItem(int position)
+        {
+            return mData.get(position);
+        }
+        public void removeItem(int position)
+        {
+            mData.remove(position);
+            notifyItemRemoved(position);
+        }
+
+        public void restoreItem(Comment comment, int position)
+        {
+            mData.add(position,comment);
+            notifyItemInserted(position);
+        }
         public class MyViewHolder extends  RecyclerView.ViewHolder{
 
-            TextView tvContent,tvWriterName;
-            ImageView imgCommentUserProfile;
+            public TextView tvContent,tvWriterName;
+            public ImageView imgCommentUserProfile;
+            public RelativeLayout viewBackground, viewForeground;
             public MyViewHolder(@NonNull View itemView) {
                 super(itemView);
-
-
                 tvContent = itemView.findViewById(R.id.comment_item_content);
                 tvWriterName = itemView.findViewById(R.id.comment_item_user);
-                imgCommentUserProfile = itemView.findViewById(R.id.comment_item_writer_image);
+                imgCommentUserProfile = itemView.findViewById(R.id.item_user_image_card);
+                viewBackground = itemView.findViewById(R.id.comment_view_background);
+                viewForeground = itemView.findViewById(R.id.comment_view_foreground);
+            }
 
-
+            public void show()
+            {
+                this.itemView.refreshDrawableState();
             }
         }
 

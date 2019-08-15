@@ -79,9 +79,17 @@ public class CommentListViewModel extends AndroidViewModel {
         }
     }
 
+    public void addbackComment(Comment c, CommentRepository.InsertCommentListener listener)
+    {
+        repository.insertback(c,listener);
+    }
     public void addComment(Comment c, CommentRepository.InsertCommentListener listener)
     {
         repository.insert(c,listener);
+    }
+    public void removeComment(Comment c, CommentRepository.RemoveCommentListener listener)
+    {
+        repository.remove(c,listener);
     }
     public LiveData<List<Comment>> getComments()
     {

@@ -108,12 +108,12 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/comment_item_writer_image"
+            app:layout_constraintTop_toBottomOf="@+id/item_user_image_card"
             app:layout_constraintVertical_bias="0.666"
             tools:text="@tools:sample/full_names" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/comment_item_writer_image"
+            android:id="@+id/item_user_image_card"
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:layout_marginTop="2dp"

@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.idanl.blogsport.Models.Entities.Post;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class PostRepository {
@@ -15,23 +16,27 @@ public class PostRepository {
     private PostDao mPostDao;
     ModelFirebasePost modelFirebase = ModelFirebasePost.instance;
 
-    interface changeLikePostListener {
-        void onLike();
-        void onDislike();
+    public interface ExistPostListener {
+        void onExist();
+        void onNotExist();
         void onOffline();
-        void onError(Exception e);
     }
+    public void isPostExist(String postKey, ExistPostListener listener) {
+        modelFirebase.isPostExist(postKey, listener);
+    }
+
+
     PostRepository() {
         AppLocalDbRepository db = ModelSql.db;
 
     }
-    class PostListLiveData extends MutableLiveData<List<Post>>{
+    class PostListLiveData extends MutableLiveData<LinkedList<Post>>{
         @Override
         protected void onActive() {
             super.onActive();
             modelFirebase.activateGetAllPostsListener(new GetAllPostsListener() {
                 @Override
-                public void onResponse(List<Post> list) {
+                public void onResponse(LinkedList<Post> list) {
                     Log.d("TAG","FB data = " + list.size() );
                     setValue(list);
                     PostAsyncDao.deleteAll();
@@ -42,7 +47,7 @@ public class PostRepository {
                 {
                     PostAsyncDao.getAllPosts(new GetAllPostsListener() {
                         @Override
-                        public void onResponse(List<Post> list) {
+                        public void onResponse(LinkedList<Post> list) {
                             setValue(list);
                         }
 
@@ -65,7 +70,7 @@ public class PostRepository {
             super();
             PostAsyncDao.getAllPosts(new GetAllPostsListener() {
                                          @Override
-                                         public void onResponse(List<Post> list) {
+                                         public void onResponse(LinkedList<Post> list) {
                                              setValue(list);
                                          }
 
@@ -86,7 +91,7 @@ public class PostRepository {
         void onError();
     }
     public interface GetAllPostsListener{
-        void onResponse(List<Post> list);
+        void onResponse(LinkedList<Post> list);
         void onError();
     }
 
@@ -102,7 +107,7 @@ public class PostRepository {
 
 
 
-    public LiveData<List<Post>> getmAllPosts() {
+    public LiveData<LinkedList<Post>> getmAllPosts() {
         return postListLiveData;
     }
 

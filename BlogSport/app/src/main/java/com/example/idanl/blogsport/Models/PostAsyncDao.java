@@ -16,6 +16,7 @@ import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.PostAllComments;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Dao
@@ -29,7 +30,7 @@ interface PostDao{
     @Query("DELETE FROM POST_TABLE WHERE id = :postKey ")
     void deletePost(int postKey);
 
-    @Query("SELECT * FROM POST_TABLE")
+    @Query("SELECT * FROM POST_TABLE order by timestamp DESC")
     List<Post> getAllPosts();
 
     @Query("SELECT * FROM POST_TABLE WHERE post_table.id = :postKey ")
@@ -48,16 +49,16 @@ interface PostDao{
 public class PostAsyncDao{
 
     public static void getAllPosts(final PostRepository.GetAllPostsListener listener) {
-        new AsyncTask<String,String,List<Post>>(){
+        new AsyncTask<String,String,LinkedList<Post>>(){
 
             @Override
-            protected List<Post> doInBackground(String... strings) {
-                List<Post> list = ModelSql.db.postDao().getAllPosts();
+            protected LinkedList<Post> doInBackground(String... strings) {
+                LinkedList<Post> list = new LinkedList<Post>(ModelSql.db.postDao().getAllPosts());
                return list;
             }
 
             @Override
-            protected void onPostExecute(List<Post> data) {
+            protected void onPostExecute(LinkedList<Post> data) {
                 super.onPostExecute(data);
                 if (data!=null)
                     listener.onResponse(data);

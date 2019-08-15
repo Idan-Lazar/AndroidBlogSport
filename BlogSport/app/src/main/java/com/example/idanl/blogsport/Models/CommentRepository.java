@@ -21,6 +21,14 @@ public class CommentRepository {
 
     }
 
+    public void remove(Comment c, CommentRepository.RemoveCommentListener listener) {
+        modelFirebase.removeComment(c.getCommentKey(),c.getPostId(), listener);
+    }
+
+    public void insertback(Comment c, InsertCommentListener listener) {
+        modelFirebase.addbackComment(c,listener);
+    }
+
 
     public interface GetCommentListener{
         void onResponse(Comment p);
@@ -72,5 +80,10 @@ public class CommentRepository {
         void onError(Exception e);
     }
 
+    public interface RemoveCommentListener {
+        void onRemove();
+        void onError(Exception x);
+        void onOffline();
+    }
 }
 

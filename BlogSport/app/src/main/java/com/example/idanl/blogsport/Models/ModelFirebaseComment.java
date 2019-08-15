@@ -96,25 +96,51 @@ public class ModelFirebaseComment extends ModelFirebase {
 
     }
 
-    void removeComment(String commentId, String postId)
+    void removeComment(String commentId, String postId, final CommentRepository.RemoveCommentListener listener)
     {
         if(isNetworkConnected())
         {db.collection("Posts").document(postId).collection("Comments").document(commentId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-
+                listener.onRemove();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                listener.onError(e);
             }
         });}
         else
         {
-
+            listener.onOffline();
         }
     }
 
 
+    public void addbackComment(Comment c, final CommentRepository.InsertCommentListener listener) {
+        if (isNetworkConnected())
+        {
+            String postKey = c.getPostId();
+            Log.d("PostKey", "addComment: "+postKey);
+            final DocumentReference doc = db.collection("Posts").document(postKey).collection("Comments").document(c.getCommentKey());
+            doc.set(c).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    listener.onComplete(task.isSuccessful());
+                }
+
+
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onError(e);
+
+                }
+            });
+        }
+        else
+        {
+            listener.onOffline();
+        }
+    }
 }

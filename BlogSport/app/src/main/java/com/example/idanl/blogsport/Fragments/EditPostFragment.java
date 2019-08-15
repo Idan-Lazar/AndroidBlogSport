@@ -117,54 +117,75 @@ public class EditPostFragment extends Fragment {
                     btn_Edit.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.VISIBLE);
                     enable_input(false);
-
-                    if (!tv_Title.getText().toString().isEmpty() && !tv_SecondTitle.getText().toString().isEmpty()
-                            && !tv_Content.getText().toString().isEmpty() &&  !tv_Category.getText().toString().isEmpty() && pickerImgUri !=null)
-                    {
-                        if(pickerImgUri.toString().equals(p.getPicture()))
-                        {
-                            Post post = new Post(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),p.getPicture(),muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
-                            post.setPostKey(p.getPostKey());
-                            addPost(post);
-                            enable_input(true);
-                        }
-                        else
-                        {
-                            postUpdateViewModel.saveBlogImage(pickerImgUri, new PostRepository.SaveImageListener() {
-                                @Override
-                                public void onComplete(String imageDownloadLink) {
-                                    Post post = new Post(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),imageDownloadLink,muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
+                    postUpdateViewModel.isPostExist(p.getPostKey(), new PostRepository.ExistPostListener() {
+                        @Override
+                        public void onExist() {
+                            if (!tv_Title.getText().toString().isEmpty() && !tv_SecondTitle.getText().toString().isEmpty()
+                                    && !tv_Content.getText().toString().isEmpty() &&  !tv_Category.getText().toString().isEmpty() && pickerImgUri !=null)
+                            {
+                                if(pickerImgUri.toString().equals(p.getPicture()))
+                                {
+                                    Post post = new Post(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),p.getPicture(),muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
                                     post.setPostKey(p.getPostKey());
                                     addPost(post);
                                     enable_input(true);
                                 }
+                                else
+                                {
 
-                                @Override
-                                public void onOffline() {
-                                    showMessage("Device not Conected can't upload the post");
-                                    btn_Edit.setVisibility(View.VISIBLE);
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                    enable_input(true);
+                                    postUpdateViewModel.saveBlogImage(pickerImgUri, new PostRepository.SaveImageListener() {
+                                        @Override
+                                        public void onComplete(String imageDownloadLink) {
+                                            Post post = new Post(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),imageDownloadLink,muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
+                                            post.setPostKey(p.getPostKey());
+                                            addPost(post);
+                                            enable_input(true);
+                                        }
+
+                                        @Override
+                                        public void onOffline() {
+                                            showMessage("Device not Conected can't upload the post");
+                                            btn_Edit.setVisibility(View.VISIBLE);
+                                            progressBar.setVisibility(View.INVISIBLE);
+                                            enable_input(true);
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            showMessage(e.getMessage());
+                                            btn_Edit.setVisibility(View.VISIBLE);
+                                            progressBar.setVisibility(View.INVISIBLE);
+                                            enable_input(true);
+                                        }
+                                    });
+
                                 }
-
-                                @Override
-                                public void onError(Exception e) {
-                                    showMessage(e.getMessage());
-                                    btn_Edit.setVisibility(View.VISIBLE);
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                    enable_input(true);
-                                }
-                            });
-
+                            }
+                            else
+                            {
+                                showMessage("Please Verify all input fields and choose post Image");
+                                btn_Edit.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
+                                enable_input(true);
+                            }
                         }
-                    }
-                    else
-                    {
-                        showMessage("Please Verify all input fields and choose post Image");
-                        btn_Edit.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.INVISIBLE);
-                        enable_input(true);
-                    }
+
+                        @Override
+                        public void onNotExist() {
+                            showMessage("Post not exist anymore");
+                            assert getView() != null;
+                            Navigation.findNavController(getView()).navigateUp();
+                        }
+
+                        @Override
+                        public void onOffline() {
+                            showMessage("Device not Conected can't upload the post");
+                            btn_Edit.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            enable_input(true);
+                        }
+                    });
+
 
                 }
             });

@@ -18,12 +18,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,10 +64,10 @@ public class ModelFirebasePost extends ModelFirebase {
                     listener.onError();
                 }
                 else {
-                    db.collection("Posts").whereEqualTo("deleted",false).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            final List<Post> data = new ArrayList<>();
+                            final LinkedList<Post> data = new LinkedList<>();
                             if (!isNetworkConnected())
                             {
 
@@ -75,9 +77,12 @@ public class ModelFirebasePost extends ModelFirebase {
                                 for (DocumentSnapshot doc : queryDocumentSnapshots
                                 ) {
                                     Post p = doc.toObject(Post.class);
-                                    data.add(p);
-                                }
+                                    if (!p.isDeleted())
+                                    {
+                                        data.add(p);
+                                    }
 
+                                }
                                 listener.onResponse(data);
                             }
                         }
@@ -210,5 +215,27 @@ public class ModelFirebasePost extends ModelFirebase {
     }
 
 
+    public void isPostExist(String postKey, final PostRepository.ExistPostListener listener) {
+        if (isNetworkConnected())
+        {
+            db.collection("Posts").whereEqualTo("deleted",false).whereEqualTo("postKey",postKey).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    if(queryDocumentSnapshots.size() == 0)
+                    {
+                        listener.onNotExist();
+                    }
+                    else{
+                        listener.onExist();
+                    }
+                }
+            });
+        }
+       else
+        {
+            listener.onOffline();
+        }
 
+
+    }
 }

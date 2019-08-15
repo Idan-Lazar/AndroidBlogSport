@@ -74,11 +74,10 @@ public class Post implements Serializable {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted( boolean deleted) {
         this.deleted = deleted;
     }
 
-    @NonNull
     @Ignore
     private boolean deleted = false;
     @NonNull
