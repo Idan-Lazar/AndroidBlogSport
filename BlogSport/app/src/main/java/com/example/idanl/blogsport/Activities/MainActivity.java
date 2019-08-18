@@ -36,10 +36,13 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.example.idanl.blogsport.Fragments.HomeFragmentDirections;
+
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.ViewModel.PostInsertViewModel;
 import com.example.idanl.blogsport.Models.PostRepository;
 import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
+
 import com.example.idanl.blogsport.R;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -127,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             return navController.navigateUp();
-        }else{
+        }
+        else{
             return NavigationUI.onNavDestinationSelected(item,navController);
         }
 

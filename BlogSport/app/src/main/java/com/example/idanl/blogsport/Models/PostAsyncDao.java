@@ -14,6 +14,7 @@ import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.Entities.PostAllComments;
+import com.example.idanl.blogsport.Models.ViewModel.PostsPerUserViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,6 +41,9 @@ interface PostDao{
     @Transaction
     PostAllComments getPostAllComments(String postKey);
 
+    @Query("SELECT * FROM POST_TABLE WHERE userId = :userId order by timestamp DESC")
+    List<Post>  getPostsPerUser(String userId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPosts(List<Post> posts);
 
@@ -55,6 +59,26 @@ public class PostAsyncDao{
             protected LinkedList<Post> doInBackground(String... strings) {
                 LinkedList<Post> list = new LinkedList<Post>(ModelSql.db.postDao().getAllPosts());
                return list;
+            }
+
+            @Override
+            protected void onPostExecute(LinkedList<Post> data) {
+                super.onPostExecute(data);
+                if (data!=null)
+                    listener.onResponse(data);
+
+            }
+        }.execute();
+
+    }
+
+    public static void getPostsPerUser(final String userId, final PostRepository.GetAllPostsListener listener) {
+        new AsyncTask<String,String,LinkedList<Post>>(){
+
+            @Override
+            protected LinkedList<Post> doInBackground(String... strings) {
+                LinkedList<Post> list = new LinkedList<Post>(ModelSql.db.postDao().getPostsPerUser(userId));
+                return list;
             }
 
             @Override

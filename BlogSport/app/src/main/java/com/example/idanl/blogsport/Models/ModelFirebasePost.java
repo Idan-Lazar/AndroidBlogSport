@@ -44,6 +44,16 @@ public class ModelFirebasePost extends ModelFirebase {
     }
 
     private ListenerRegistration getAllPostsListener;
+
+    public ListenerRegistration getGetPostsPerUserListener() {
+        return getPostsPerUserListener;
+    }
+
+    public void setGetPostsPerUserListener(ListenerRegistration getPostsPerUserListener) {
+        this.getPostsPerUserListener = getPostsPerUserListener;
+    }
+
+    private ListenerRegistration getPostsPerUserListener;
     public static ModelFirebasePost getInstance() {
         return instance;
     }
@@ -56,7 +66,7 @@ public class ModelFirebasePost extends ModelFirebase {
 
     void activateGetAllPostsListener(final PostRepository.GetAllPostsListener listener) {
 
-        this.setGetAllPostsListener(db.collectionGroup("Posts").orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        this.setGetAllPostsListener(db.collectionGroup("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e!=null){
@@ -74,10 +84,9 @@ public class ModelFirebasePost extends ModelFirebase {
                         for (DocumentSnapshot doc : queryDocumentSnapshots
                         ) {
                             Post p = doc.toObject(Post.class);
-                            if (!p.isDeleted())
-                            {
+
                                 data.add(p);
-                            }
+
 
                         }
                         listener.onResponse(data);
@@ -239,5 +248,40 @@ public class ModelFirebasePost extends ModelFirebase {
         }
 
 
+    }
+
+
+    public void activatePostsPerUserListener(String userId, final PostRepository.GetAllPostsListener listener) {
+        this.setGetPostsPerUserListener(db.collection("Users").document(userId).collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e!=null){
+                    Log.d("Firestore","Error:"+e.getMessage());
+                }
+                else
+                {
+                    Log.d("FIrebase", "onEvent: firebase getall posts");
+                    if (!isNetworkConnected())
+                    {
+                        listener.onError();
+                    }
+                    else {
+                        final LinkedList<Post> data = new LinkedList<>();
+                        for (DocumentSnapshot doc : queryDocumentSnapshots
+                        ) {
+                            Post p = doc.toObject(Post.class);
+                            data.add(p);
+
+                        }
+                        listener.onResponse(data);
+
+                    }
+                }
+            }
+        }));
+    }
+
+    public void removePostsPerUserListener() {
+        getPostsPerUserListener.remove();
     }
 }

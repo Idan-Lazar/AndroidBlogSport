@@ -26,7 +26,15 @@
         android:id="@+id/profileFragment"
         android:name="com.example.idanl.blogsport.Fragments.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <argument
+            android:name="userId"
+            app:argType="string"
+            android:defaultValue="profile" />
+        <action
+            android:id="@+id/action_profileFragment_to_postDetailsFragment"
+            app:destination="@id/postDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/postDetailsFragment"
         android:name="com.example.idanl.blogsport.Fragments.PostDetailsFragment"
@@ -65,5 +73,13 @@
         android:id="@+id/writersFragment"
         android:name="com.example.idanl.blogsport.Fragments.UserListFragment"
         android:label="Writers"
-        tools:layout="@layout/fragment_user_list" />
+        tools:layout="@layout/fragment_user_list" >
+        <action
+            android:id="@+id/action_writersFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
 </navigation>

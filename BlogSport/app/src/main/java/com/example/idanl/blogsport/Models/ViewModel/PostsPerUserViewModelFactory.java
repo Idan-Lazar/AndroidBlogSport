@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public class UserProfileViewModelFactory implements ViewModelProvider.Factory  {
+public class PostsPerUserViewModelFactory implements ViewModelProvider.Factory  {
 
     private Application mApplication;
     private String userId;
-    public UserProfileViewModelFactory(Application application, String userId) {
+    public PostsPerUserViewModelFactory(Application application, String userId) {
         this.mApplication = application;
         this.userId = userId;
     }
@@ -19,7 +19,7 @@ public class UserProfileViewModelFactory implements ViewModelProvider.Factory  {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new UserProfileViewModel(mApplication, userId);
+        return (T) new PostsPerUserViewModel(mApplication, userId);
 
     }
 }

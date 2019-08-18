@@ -106,7 +106,19 @@ public class PostRepository {
     }
     private PostListLiveData postListLiveData = new PostListLiveData();
 
+    public void activatePostPerUserFirebaseListener(String userId, GetAllPostsListener listener)
+    {
+        modelFirebase.activatePostsPerUserListener(userId,listener);
+    }
 
+    public void disActivatePostsPerUserListener()
+    {
+        modelFirebase.removePostsPerUserListener();
+    }
+    public void getPostsPerUserDao(String userId, GetAllPostsListener listener)
+    {
+        PostAsyncDao.getPostsPerUser(userId, listener);
+    }
 
     public LiveData<LinkedList<Post>> getmAllPosts() {
         return postListLiveData;
