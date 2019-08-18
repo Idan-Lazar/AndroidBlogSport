@@ -26,8 +26,6 @@ public class PostDetailsViewModel extends AndroidViewModel {
     class PostDetailLiveData extends MutableLiveData<Post> {
 
         private final String postKey;
-        private final String userId;
-
         PostDetailLiveData(Application application, final String postKey) {
             this.postKey = postKey;
             if (this.postKey!=null) {
@@ -52,7 +50,7 @@ public class PostDetailsViewModel extends AndroidViewModel {
         protected void onActive() {
             super.onActive();
             if(this.postKey!=null){
-                PostRepository.instance.getPostFirebase(this.postKey , this.userId, new PostRepository.GetPostListener() {
+                PostRepository.instance.getPostFirebase(this.postKey, new PostRepository.GetPostListener() {
                     @Override
                     public void onResponse(Post p) {
                         Log.d("TAG","post received from firebase" + postKey );

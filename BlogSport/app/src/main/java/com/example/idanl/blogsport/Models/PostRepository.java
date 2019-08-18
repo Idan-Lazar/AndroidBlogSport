@@ -20,6 +20,7 @@ public class PostRepository {
         void onExist();
         void onNotExist();
         void onOffline();
+        void onError(Exception e);
     }
     public void isPostExist(String postKey, ExistPostListener listener) {
         modelFirebase.isPostExist(postKey, listener);
@@ -95,9 +96,9 @@ public class PostRepository {
         void onError();
     }
 
-    public void getPostFirebase(String postKey, String userId, GetPostListener listener)
+    public void getPostFirebase(String postKey, GetPostListener listener)
     {
-        modelFirebase.getPost(postKey , userId, listener);
+        modelFirebase.getPost(postKey , listener);
     }
     public void getPostDao(String postKey, GetPostListener listener)
     {

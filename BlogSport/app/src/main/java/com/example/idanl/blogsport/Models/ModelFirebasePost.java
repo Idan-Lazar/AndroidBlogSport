@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -55,47 +56,34 @@ public class ModelFirebasePost extends ModelFirebase {
 
     void activateGetAllPostsListener(final PostRepository.GetAllPostsListener listener) {
 
-        this.setGetAllPostsListener(db.collectionGroup("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        this.setGetAllPostsListener(db.collectionGroup("Posts").orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                Log.d("FIrebase", "onEvent: firebase getall posts");
-                if (!isNetworkConnected())
+                if (e!=null){
+                    Log.d("Firestore","Error:"+e.getMessage());
+                }
+                else
                 {
-                    listener.onError();
-                }
-                else {
-                    db.collectionGroup("Posts").orderBy("timestamp", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            final LinkedList<Post> data = new LinkedList<>();
-                            if (!isNetworkConnected())
+                    Log.d("FIrebase", "onEvent: firebase getall posts");
+                    if (!isNetworkConnected())
+                    {
+                        listener.onError();
+                    }
+                    else {
+                        final LinkedList<Post> data = new LinkedList<>();
+                        for (DocumentSnapshot doc : queryDocumentSnapshots
+                        ) {
+                            Post p = doc.toObject(Post.class);
+                            if (!p.isDeleted())
                             {
-
-                                listener.onError();
+                                data.add(p);
                             }
-                            else {
-                                for (DocumentSnapshot doc : queryDocumentSnapshots
-                                ) {
-                                    Post p = doc.toObject(Post.class);
-                                    if (!p.isDeleted())
-                                    {
-                                        data.add(p);
-                                    }
 
-                                }
-                                listener.onResponse(data);
-                            }
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            listener.onError();
-                        }
-                    });
+                        listener.onResponse(data);
 
+                    }
                 }
-
-
             }
         }));
     }
@@ -107,8 +95,8 @@ public class ModelFirebasePost extends ModelFirebase {
     void addPost(Post p, final PostRepository.InsertPostListener listener) {
         if (isNetworkConnected())
         {
-
-            final DocumentReference doc = db.collection("Posts").document();
+            String userId = p.getUserId();
+            final DocumentReference doc = db.collection("Users").document(userId).collection("Posts").document();
             String key = doc.getId();
             p.setPostKey(key);
             doc.collection("Comments");
@@ -161,21 +149,29 @@ public class ModelFirebasePost extends ModelFirebase {
 
 
 
-     void getPost(String postKey, String userId, final PostRepository.GetPostListener listener) {
+     void getPost(String postKey, final PostRepository.GetPostListener listener) {
         if (isNetworkConnected())
         {
-            db.collection("Users").document(userId).collection("Posts").document(postKey).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            db.collectionGroup("Posts").whereEqualTo("postKey", postKey).addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
-                public void onEvent(@javax.annotation.Nullable DocumentSnapshot doc, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                    assert doc != null;
-                    final Post post = doc.toObject(Post.class);
-                    assert post != null;
-                    listener.onResponse(post);
+                public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    if (e!=null){
+                        Log.d("Firestore","Error:"+e.getMessage());
+                    }
+                    else
+                    {
+                       DocumentSnapshot snapshot = queryDocumentSnapshots.getDocuments().get(0);
+                       final Post p = snapshot.toObject(Post.class);
+                       listener.onResponse(p);
+
+                    }
 
 
 
 
                 }
+
+
             });
         }
         else {
@@ -219,7 +215,7 @@ public class ModelFirebasePost extends ModelFirebase {
     public void isPostExist(String postKey, final PostRepository.ExistPostListener listener) {
         if (isNetworkConnected())
         {
-            db.collection("Posts").whereEqualTo("deleted",false).whereEqualTo("postKey",postKey).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            db.collectionGroup("Posts").whereEqualTo("deleted",false).whereEqualTo("postKey",postKey).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                     if(queryDocumentSnapshots.size() == 0)
@@ -229,6 +225,11 @@ public class ModelFirebasePost extends ModelFirebase {
                     else{
                         listener.onExist();
                     }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onError(e);
                 }
             });
         }

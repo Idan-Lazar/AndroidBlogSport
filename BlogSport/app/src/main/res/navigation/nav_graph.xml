@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_postDetailsFragment_to_postEditFragment3"
             app:destination="@id/postEditFragment" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
     </fragment>
     <activity
         android:id="@+id/loginActivity"

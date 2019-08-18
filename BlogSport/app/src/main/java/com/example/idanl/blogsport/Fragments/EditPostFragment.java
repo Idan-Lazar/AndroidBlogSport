@@ -125,9 +125,8 @@ public class EditPostFragment extends Fragment {
                             {
                                 if(pickerImgUri.toString().equals(p.getPicture()))
                                 {
-                                    Post post = new Post(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),p.getPicture(),muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
-                                    post.setPostKey(p.getPostKey());
-                                    addPost(post);
+                                    p.updatePost(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),p.getPicture(),muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
+                                    addPost(p);
                                     enable_input(true);
                                 }
                                 else
@@ -136,9 +135,8 @@ public class EditPostFragment extends Fragment {
                                     postUpdateViewModel.saveBlogImage(pickerImgUri, new PostRepository.SaveImageListener() {
                                         @Override
                                         public void onComplete(String imageDownloadLink) {
-                                            Post post = new Post(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),imageDownloadLink,muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
-                                            post.setPostKey(p.getPostKey());
-                                            addPost(post);
+                                            p.updatePost(tv_Title.getText().toString(),tv_SecondTitle.getText().toString(),tv_Category.getText().toString(), tv_Content.getText().toString(),imageDownloadLink,muserViewModel.getUid(),0,muserViewModel.getUserImageUrl().toString(),muserViewModel.getDisplayName());
+                                            addPost(p);
                                             enable_input(true);
                                         }
 
@@ -182,6 +180,12 @@ public class EditPostFragment extends Fragment {
                             showMessage("Device not Conected can't upload the post");
                             btn_Edit.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.INVISIBLE);
+                            enable_input(true);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            showMessage("Error"+ e.getMessage());
                             enable_input(true);
                         }
                     });
@@ -289,7 +293,7 @@ public class EditPostFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and nameTextView
         void onFragmentInteraction(Uri uri);
     }
 }

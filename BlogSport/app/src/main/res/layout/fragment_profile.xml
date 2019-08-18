@@ -31,7 +31,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/user_profile_"
+            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
             app:layout_constraintTop_toBottomOf="@+id/user_profile_email_tv" />
 
         <TextView
@@ -48,12 +48,12 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/user_profile_"
+            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
             app:layout_constraintTop_toBottomOf="@+id/divider4"
             tools:text="@string/email" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/user_profile_"
+            android:id="@+id/user_profile_image"
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:layout_marginStart="8dp"
@@ -76,7 +76,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/user_profile_"
+            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
             app:layout_constraintTop_toBottomOf="@+id/user_profile_name_tv" />
 
         <TextView
@@ -93,7 +93,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/user_profile_"
+            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/full_names" />
 
@@ -139,7 +139,7 @@
 
         <View
             android:id="@+id/divider7"
-            android:layout_width="395dp"
+            android:layout_width="0dp"
             android:layout_height="2dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"

@@ -86,7 +86,7 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
     CommentAdapter commentAdapter;
     ItemTouchHelper.SimpleCallback itemTouchHelperCallBack ;
     List<Comment> comments;
-    String postKey;
+    String postKey, userId;
     NestedScrollView rootLayout;
     AlertDialog dialog;
 
@@ -157,6 +157,7 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
         //ViewModel And LiveData Init
         assert getArguments() != null;
         postKey = PostDetailsFragmentArgs.fromBundle(getArguments()).getPostKey();
+        userId = PostDetailsFragmentArgs.fromBundle(getArguments()).getUserId();
         Activity me = this.getActivity();
         mPostUpdateViewModel = ViewModelProviders.of(this).get(PostUpdateViewModel.class);
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);

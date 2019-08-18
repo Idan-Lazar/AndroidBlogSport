@@ -105,7 +105,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    HomeFragmentDirections.ActionHomeFragmentToPostDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(mPosts.get(position).getPostKey());
+                    HomeFragmentDirections.ActionHomeFragmentToPostDetailsFragment action = HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(mPosts.get(position).getPostKey(), mPosts.get(position).getUserId());
                     Navigation.findNavController(v)
                             .navigate(action);
                 }
