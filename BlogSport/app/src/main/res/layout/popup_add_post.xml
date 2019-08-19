@@ -1,128 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:keyboardNavigationCluster="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/popup_user_image"
-        style="@style/profile_style"
-        android:layout_width="48dp"
-        android:layout_height="0dp"
-        android:background="#ffffff"
-        android:padding="4dp"
-        android:scaleType="centerCrop"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/popup_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/popup_title"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars[0]" />
 
-    <EditText
-        android:id="@+id/popup_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:background="@drawable/popup_edittext_style"
-        android:ems="10"
-        android:hint="Title"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toStartOf="@+id/popup_user_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/popup_content"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/popup_edittext_style"
-        android:ems="10"
-        android:hint="Content"
-        android:inputType="textMultiLine"
-        android:lines="6"
-        android:singleLine="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popup_category" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/popup_user_image"
+            style="@style/profile_style"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:background="#ffffff"
+            android:padding="4dp"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/popup_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/popup_title"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars[0]" />
 
-    <EditText
-        android:id="@+id/popup_second_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/popup_edittext_style"
-        android:ems="10"
-        android:hint="Second Title"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popup_title"
-        android:autofillHints="" />
+        <EditText
+            android:id="@+id/popup_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:background="@drawable/popup_edittext_style"
+            android:ems="10"
+            android:hint="Title"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toStartOf="@+id/popup_user_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/popup_category"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/popup_edittext_style"
-        android:ems="10"
-        android:hint="Category"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popup_second_title" />
+        <EditText
+            android:id="@+id/popup_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/popup_edittext_style"
+            android:ems="10"
+            android:hint="Content"
+            android:inputType="textMultiLine"
+            android:lines="6"
+            android:singleLine="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/popup_category" />
 
-    <Button
-        android:id="@+id/popup_send"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:background="@drawable/reg_btn_style"
-        android:text="Send"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+        <EditText
+            android:id="@+id/popup_second_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:background="@drawable/popup_edittext_style"
+            android:ems="10"
+            android:hint="Second Title"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/popup_title" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="193dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/popup_content">
+        <EditText
+            android:id="@+id/popup_category"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/popup_edittext_style"
+            android:ems="10"
+            android:hint="Category"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/popup_second_title" />
 
-        <ImageView
-            android:id="@+id/image_post_popup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#414141"
-            android:padding="30dp"
-            android:scaleType="centerInside"
-            android:tint="@color/common_google_signin_btn_text_dark_pressed"
-            app:srcCompat="@drawable/photo_icon" />
+        <Button
+            android:id="@+id/popup_send"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/reg_btn_style"
+            android:text="Send"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
-        <View
-            android:id="@+id/gradient_shape_view_popup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/trending_gradient_shape"
-            android:visibility="visible" />
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="193dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/popup_content">
 
-    <ProgressBar
-        android:id="@+id/popup_progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_style"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/popup_send"
-        app:layout_constraintEnd_toEndOf="@+id/popup_send"
-        app:layout_constraintStart_toStartOf="@+id/popup_send"
-        app:layout_constraintTop_toTopOf="@+id/popup_send" />
+            <ImageView
+                android:id="@+id/image_post_popup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#414141"
+                android:padding="30dp"
+                android:scaleType="centerInside"
+                android:tint="@color/common_google_signin_btn_text_dark_pressed"
+                app:srcCompat="@drawable/photo_icon" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:id="@+id/gradient_shape_view_popup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/trending_gradient_shape"
+                android:visibility="visible" />
+        </FrameLayout>
+
+        <ProgressBar
+            android:id="@+id/popup_progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circle_style"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/popup_send"
+            app:layout_constraintEnd_toEndOf="@+id/popup_send"
+            app:layout_constraintStart_toStartOf="@+id/popup_send"
+            app:layout_constraintTop_toTopOf="@+id/popup_send" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</ScrollView>

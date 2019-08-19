@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -87,7 +88,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         ImageView imgUser;
         ProgressBar progressBar;
         ConstraintLayout layout;
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull final View itemView) {
             super(itemView);
             layout = itemView.findViewById(R.id.item_user_layout);
             progressBar = itemView.findViewById(R.id.user_item_progressBar);
@@ -98,7 +99,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    UserListFragmentDirections.ActionWritersFragmentToUserFragment action = UserListFragmentDirections.actionWritersFragmentToUserFragment(mUsers.get(position).getUid());
+                    UserListFragmentDirections.ActionWritersFragmentToUserFragment action = UserListFragmentDirections.actionWritersFragmentToUserFragment(mUsers.get(position).getUid(),mUsers.get(position).getName());
                     Navigation.findNavController(v)
                             .navigate(action);
                 }

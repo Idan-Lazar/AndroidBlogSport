@@ -34,6 +34,7 @@ public class Comment {
     private String userImage="";
     @NonNull
     private String userName="";
+
     @NonNull
     private String postId ="";
     @NonNull

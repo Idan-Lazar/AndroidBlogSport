@@ -10,12 +10,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -23,6 +23,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class ModelFirebaseComment extends ModelFirebase {
     final public static ModelFirebaseComment instance = new ModelFirebaseComment();
@@ -38,33 +40,38 @@ public class ModelFirebaseComment extends ModelFirebase {
         
     }
     
-    void GetAllComments(final CommentRepository.GetAllCommentsListener listener, String postKey) {
-    if (isNetworkConnected())
-    {
-        Log.d("Id", "GetAllComments: "+postKey);
+    void GetAllComments(final CommentRepository.GetAllCommentsListener listener, final String postKey) {
+    if (isNetworkConnected()) {
+        Log.d("Id", "GetAllComments: " + postKey);
         DocumentReference doc = db.collection("Posts").document(postKey);
-
-        db.collection("Posts").document(postKey).collection("Comments").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("Posts").document(postKey).collection("Comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                final List<Comment> commentList = new LinkedList<>();
-                for (DocumentSnapshot doc: queryDocumentSnapshots
-                ) {
-                    Comment comment = doc.toObject(Comment.class);
-                    commentList.add(comment);
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.d("Exception Comments", "onEvent: " + e.getMessage());
+                } else {
+                    db.collection("Posts").document(postKey).collection("Comments").orderBy("timestamp", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            final List<Comment> commentList = new LinkedList<>();
+                            for (DocumentSnapshot doc : queryDocumentSnapshots
+                            ) {
+                                Comment comment = doc.toObject(Comment.class);
+                                commentList.add(comment);
 
+                            }
+                            listener.onResponse(commentList);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onError();
+                        }
+                    });
                 }
-                listener.onResponse(commentList);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                listener.onError();
             }
         });
-    }
-
-    }
+    }}
 
     void addComment(Comment p, final CommentRepository.InsertCommentListener listener) {
         if (isNetworkConnected())

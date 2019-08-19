@@ -5,17 +5,35 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.idanl.blogsport.Adapters.CommentAdapter;
+import com.example.idanl.blogsport.Models.ViewModel.UserViewModel;
 
 public class CommentItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     private CommentItemTouchHelperListener listener;
-    public CommentItemTouchHelper(int dragDirs, int swipeDirs, CommentItemTouchHelperListener listener) {
+    private String userId;
+    private CommentAdapter commentAdapter;
+
+    @Override
+    public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        if (viewHolder instanceof CommentAdapter.MyViewHolder)
+        {
+            if(((CommentAdapter.MyViewHolder) viewHolder).getUid().equals(userId))
+            {
+                return super.getSwipeDirs(recyclerView,viewHolder);
+            }
+        }
+        return 0;
+    }
+
+    public CommentItemTouchHelper(int dragDirs, int swipeDirs,String userId , CommentItemTouchHelperListener listener) {
         super(dragDirs, swipeDirs);
         this.listener = listener;
+        this.userId = userId;
     }
 
     @Override

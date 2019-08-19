@@ -23,7 +23,7 @@ interface CommentDao{
     @Query("DELETE FROM COMMENT_TABLE WHERE commentKey = :commentKey ")
     void deleteComment(int commentKey);
 
-    @Query("SELECT * FROM COMMENT_TABLE WHERE postId = :postKey")
+    @Query("SELECT * FROM COMMENT_TABLE WHERE postId = :postKey ORDER BY timestamp DESC")
     List<Comment> getAllComments(String postKey);
 
     @Query("SELECT * FROM COMMENT_TABLE WHERE comment_table.commentKey = :commentKey ")

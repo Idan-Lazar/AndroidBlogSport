@@ -32,6 +32,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
         notifyDataSetChanged();
     }
 
+    public String getUserId(int position)
+    {
+        return mData.get(position).getUserId();
+    }
+
     private List<Comment> mData;
 
         public CommentAdapter(Context mContext) {
@@ -91,6 +96,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 imgCommentUserProfile = itemView.findViewById(R.id.item_user_image_card);
                 viewBackground = itemView.findViewById(R.id.comment_view_background);
                 viewForeground = itemView.findViewById(R.id.comment_view_foreground);
+            }
+
+            public String getUid()
+            {
+                return mData.get(this.getAdapterPosition()).getUserId();
             }
 
             public void show()

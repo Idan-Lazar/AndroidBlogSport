@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.idanl.blogsport.Fragments.HomeFragment"
-        android:label="Home"
+        android:label="BlogSport"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_postDetailsFragment"
@@ -31,6 +31,10 @@
             android:name="userId"
             app:argType="string"
             android:defaultValue="profile" />
+        <argument
+            android:name="userName"
+            app:argType="string"
+            android:defaultValue="Profile" />
     </fragment>
     <fragment
         android:id="@+id/postDetailsFragment"
@@ -82,10 +86,13 @@
     <fragment
         android:id="@+id/userFragment"
         android:name="com.example.idanl.blogsport.Fragments.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        android:label="User"
+        tools:layout="@layout/fragment_profile">
         <argument
             android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="userName"
             app:argType="string" />
     </fragment>
     <action

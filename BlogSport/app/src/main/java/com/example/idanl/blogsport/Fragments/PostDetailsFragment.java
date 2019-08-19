@@ -42,6 +42,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Adapters.CommentAdapter;
 import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Helper.CommentItemTouchHelper;
@@ -86,7 +87,8 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
     CommentAdapter commentAdapter;
     ItemTouchHelper.SimpleCallback itemTouchHelperCallBack ;
     List<Comment> comments;
-    String postKey, userId;
+    String postKey, userId, currentUserId;
+
     NestedScrollView rootLayout;
     AlertDialog dialog;
 
@@ -160,6 +162,7 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
         Activity me = this.getActivity();
         mPostUpdateViewModel = ViewModelProviders.of(this).get(PostUpdateViewModel.class);
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        currentUserId = mUserViewModel.getUid();
         PostDetailsViewModelFactory factory;
         CommentListViewModelFactory cFactory;
         if (me != null){
@@ -221,7 +224,11 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
                                 et_comment.setText("");
                                 comment_ProgressBar.setVisibility(View.INVISIBLE);
                                 btn_add_comment.setVisibility(View.VISIBLE);
-                                mcommentListViewModel.notifyChange();
+                                if(getActivity()!=null)
+                                {
+                                    ((MainActivity) getActivity()).hideKeyboard();
+                                }
+                                //mcommentListViewModel.notifyChange();
                             }
 
                             @Override
@@ -320,10 +327,11 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
         commentRv.setItemAnimator(new DefaultItemAnimator());
         commentRv.addItemDecoration(new DividerItemDecoration(MyApplication.getContext(), VERTICAL));
         commentRv.setAdapter(commentAdapter);
-        itemTouchHelperCallBack = new CommentItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        itemTouchHelperCallBack = new CommentItemTouchHelper(0, ItemTouchHelper.LEFT,currentUserId, this);
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(commentRv);
 
     }
+
 
     private AlertDialog AskOption()
     {

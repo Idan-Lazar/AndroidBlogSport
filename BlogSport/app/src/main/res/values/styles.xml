@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -6,6 +6,29 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
+    </style>
+
+    <style name="ToolBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:homeAsUpIndicator"> @drawable/ic_arrow_back_white_24dp</item>
+        <item name="collapseIcon">@drawable/ic_arrow_back_white_24dp</item>
+        <item name="android:icon"> @drawable/ic_arrow_back_white_24dp</item>
+        <item name="android:navigationIcon" tools:targetApi="lollipop"> @drawable/ic_arrow_back_white_24dp</item>
+        <item name="android:gravity">center</item>
+        <item name="homeAsUpIndicator"> @drawable/ic_arrow_back_white_24dp </item>
+        <item name="actionModeCloseDrawable"> @drawable/ic_arrow_back_white_24dp</item>
+        <item name="toolbarNavigationButtonStyle">@style/ToolBar.Navigation.Tint</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
+        <item name="colorControlNormal">@color/colorWhite</item>
+
+    </style>
+    <style name="ToolBar.Navigation.Tint" parent="Widget.AppCompat.Toolbar.Button.Navigation" >
+        <item name="android:tint">@color/colorWhite</item>
     </style>
 
     <style name="profile_style">

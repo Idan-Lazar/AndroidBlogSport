@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment {
     PostsPerUserViewModel postsPerUserViewModel;
     User user;
     final PostProfileAdapter adapter = new PostProfileAdapter();
-    String usedId;
+    String usedId, userName;
     ConstraintLayout layout;
     ProgressBar progressBar;
     UserProfileViewModel userProfileViewModel;
@@ -121,6 +121,11 @@ public class ProfileFragment extends Fragment {
         {
             usedId = userViewModel.getUid();
 
+        }
+        else
+        {
+            userName = ProfileFragmentArgs.fromBundle(getArguments()).getUserName();
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle(userName);
         }
         UserProfileViewModelFactory factory = new UserProfileViewModelFactory(getActivity().getApplication(),usedId);
         userProfileViewModel = ViewModelProviders.of(this,factory).get(UserProfileViewModel.class);
