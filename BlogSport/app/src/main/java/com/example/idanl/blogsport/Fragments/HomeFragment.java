@@ -72,8 +72,6 @@ public class HomeFragment extends Fragment {
         mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
 
         mPostListViewModel.getAllPosts().observe(this, new Observer<LinkedList<Post>>() {
-
-
                     @Override
                     public void onChanged(@Nullable final LinkedList<Post> posts){
                         postRecyclerView.setVisibility(View.INVISIBLE);

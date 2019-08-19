@@ -93,12 +93,10 @@ public class ProfileFragment extends Fragment {
         postRecyclerView.setHasFixedSize(true);
         postRecyclerView.setItemAnimator(new DefaultItemAnimator());
         postRecyclerView.setAdapter(adapter);
-
         if (usedId.equals("profile"))
         {
             usedId = userViewModel.getUid();
         }
-
         UserProfileViewModelFactory factory = new UserProfileViewModelFactory(getActivity().getApplication(),usedId);
         userProfileViewModel = ViewModelProviders.of(this,factory).get(UserProfileViewModel.class);
         userProfileViewModel.getUser().observe(this, new Observer<User>() {

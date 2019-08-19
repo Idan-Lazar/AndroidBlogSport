@@ -60,7 +60,7 @@ public class PostsPerUserViewModel extends AndroidViewModel {
         public PostsPerUserLiveData(String userId) {
             super();
             this.userId = userId;
-            PostAsyncDao.getAllPosts(new PostRepository.GetAllPostsListener() {
+            PostAsyncDao.getPostsPerUser(userId,new PostRepository.GetAllPostsListener() {
                 @Override
                 public void onResponse(LinkedList<Post> list) {
                     setValue(list);
