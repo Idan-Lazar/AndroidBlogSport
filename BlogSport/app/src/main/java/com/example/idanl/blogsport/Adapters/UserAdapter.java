@@ -98,8 +98,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    UserListFragmentDirections.ActionWritersFragmentToProfileFragment action = UserListFragmentDirections.actionWritersFragmentToProfileFragment();
-                    action.setUserId(mUsers.get(position).getUid());
+                    UserListFragmentDirections.ActionWritersFragmentToUserFragment action = UserListFragmentDirections.actionWritersFragmentToUserFragment(mUsers.get(position).getUid());
                     Navigation.findNavController(v)
                             .navigate(action);
                 }

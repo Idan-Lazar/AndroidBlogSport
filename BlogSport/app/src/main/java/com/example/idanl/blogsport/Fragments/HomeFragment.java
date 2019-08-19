@@ -52,34 +52,42 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+
+        mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
+        mPostListViewModel.getAllPosts().observe(this, new Observer<LinkedList<Post>>() {
+            @Override
+            public void onChanged(@Nullable final LinkedList<Post> posts){
+
+                adapter.setPosts(posts);
+            }
+
+
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+
         DialogFragment f = new DialogFragment();
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         // Inflate the layout for this fragment
         postRecyclerView = v.findViewById(R.id.post_RV);
         progressBar = v.findViewById(R.id.home_progressBar);
-        postRecyclerView.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         postRecyclerView.setHasFixedSize(true);
         postRecyclerView.setItemAnimator(new DefaultItemAnimator());
         postRecyclerView.setAdapter(adapter);
-
-        mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
-
         mPostListViewModel.getAllPosts().observe(this, new Observer<LinkedList<Post>>() {
                     @Override
                     public void onChanged(@Nullable final LinkedList<Post> posts){
-                        postRecyclerView.setVisibility(View.INVISIBLE);
-                        progressBar.setVisibility(View.VISIBLE);
+
                         adapter.setPosts(posts);
-                        postRecyclerView.setAdapter(adapter);
-                        postRecyclerView.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.INVISIBLE);
+
                     }
 
 

@@ -153,7 +153,6 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
         commentAdapter = new CommentAdapter(getContext());
         rootLayout = v.findViewById(R.id.rootLayout);
         dialog = AskOption();
-
         //ViewModel And LiveData Init
         assert getArguments() != null;
         postKey = PostDetailsFragmentArgs.fromBundle(getArguments()).getPostKey();

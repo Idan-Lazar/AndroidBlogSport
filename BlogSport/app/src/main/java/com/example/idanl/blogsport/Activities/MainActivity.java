@@ -100,12 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.bottomNavigationView);
 
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
-        androidx.appcompat.widget.Toolbar mToolbar = findViewById(R.id.main_toolbar);
+        final androidx.appcompat.widget.Toolbar mToolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
         //if i want the title will be the same
         NavigationUI.setupActionBarWithNavController(this,navController);
         mToolbar.setTitle("BlogSport");
-
 
 
     }
@@ -132,6 +131,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             return navController.navigateUp();
+        }
+        if (item.getItemId() == R.id.writersFragment)
+        {
+            navController.navigate(R.id.action_global_writersFragment);
+            return NavigationUI.onNavDestinationSelected(item,navController);
         }
         else{
             return NavigationUI.onNavDestinationSelected(item,navController);

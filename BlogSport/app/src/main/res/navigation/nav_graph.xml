@@ -31,9 +31,6 @@
             android:name="userId"
             app:argType="string"
             android:defaultValue="profile" />
-        <action
-            android:id="@+id/action_profileFragment_to_postDetailsFragment"
-            app:destination="@id/postDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/postDetailsFragment"
@@ -75,11 +72,41 @@
         android:label="Writers"
         tools:layout="@layout/fragment_user_list" >
         <action
-            android:id="@+id/action_writersFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
+            android:id="@+id/action_writersFragment_to_userFragment"
+            app:destination="@id/userFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.example.idanl.blogsport.Fragments.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_postDetailsFragment"
+        app:destination="@id/postDetailsFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment"
+        app:launchSingleTop="true"
+        app:popUpTo="@+id/homeFragment"
+        app:popUpToInclusive="false" />
+    <action
+        android:id="@+id/action_global_writersFragment"
+        app:destination="@id/writersFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/nav_graph" />
 </navigation>

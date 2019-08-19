@@ -88,15 +88,6 @@
                             <option name="y" value="165" />
                           </Point>
                         </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_profileFragment_to_postDetailsFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -112,18 +103,30 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="userFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-99" />
+                            <option name="y" value="348" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="writersFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-18" />
-                            <option name="y" value="373" />
+                            <option name="x" value="-533" />
+                            <option name="y" value="297" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_writersFragment_to_profileFragment">
+                            <entry key="action_writersFragment_to_userFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

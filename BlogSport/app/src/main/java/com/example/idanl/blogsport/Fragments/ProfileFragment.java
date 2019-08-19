@@ -1,11 +1,14 @@
 package com.example.idanl.blogsport.Fragments;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -14,6 +17,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +32,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.idanl.blogsport.Activities.LoginActivity;
+import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Adapters.PostAdapter;
 import com.example.idanl.blogsport.Adapters.PostProfileAdapter;
@@ -70,14 +76,32 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        setHasOptionsMenu(false);
+    }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        assert getArguments()!=null;
+        assert getActivity()!=null;
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        usedId = ProfileFragmentArgs.fromBundle(getArguments()).getUserId();
+        if (usedId.equals("profile"))
+        {
+            usedId = userViewModel.getUid();
+            //((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View  v = inflater.inflate(R.layout.fragment_profile, container, false);
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-
         signOutButton = v.findViewById(R.id.user_profile_signout_button);
         editProfileButton= v.findViewById(R.id.user_profile_edit_button);
         nameTextView = v.findViewById(R.id.user_profile_name_tv);
@@ -86,17 +110,10 @@ public class ProfileFragment extends Fragment {
         postRecyclerView = v.findViewById(R.id.profile_user_post_list);
         layout = v.findViewById(R.id.layout_profile);
         progressBar = v.findViewById(R.id.profile_progressBar);
-        assert getArguments()!=null;
-        assert getActivity()!=null;
-        usedId = ProfileFragmentArgs.fromBundle(getArguments()).getUserId();
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         postRecyclerView.setHasFixedSize(true);
         postRecyclerView.setItemAnimator(new DefaultItemAnimator());
         postRecyclerView.setAdapter(adapter);
-        if (usedId.equals("profile"))
-        {
-            usedId = userViewModel.getUid();
-        }
         UserProfileViewModelFactory factory = new UserProfileViewModelFactory(getActivity().getApplication(),usedId);
         userProfileViewModel = ViewModelProviders.of(this,factory).get(UserProfileViewModel.class);
         userProfileViewModel.getUser().observe(this, new Observer<User>() {

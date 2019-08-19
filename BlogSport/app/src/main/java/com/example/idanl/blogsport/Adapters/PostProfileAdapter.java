@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.idanl.blogsport.Fragments.HomeFragmentDirections;
+import com.example.idanl.blogsport.Fragments.PostDetailsFragmentDirections;
 import com.example.idanl.blogsport.Fragments.ProfileFragment;
 import com.example.idanl.blogsport.Fragments.ProfileFragmentDirections;
 import com.example.idanl.blogsport.Models.Entities.Post;
@@ -107,9 +108,8 @@ public class PostProfileAdapter extends RecyclerView.Adapter<PostProfileAdapter.
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    ProfileFragmentDirections.ActionProfileFragmentToPostDetailsFragment action =ProfileFragmentDirections.actionProfileFragmentToPostDetailsFragment(mPosts.get(position).getPostKey(),mPosts.get(position).getUserId());
                     Navigation.findNavController(v)
-                            .navigate(action);
+                            .navigate(PostDetailsFragmentDirections.actionGlobalPostDetailsFragment(mPosts.get(position).getPostKey(),mPosts.get(position).getUserId()));
                 }
             });
         }
