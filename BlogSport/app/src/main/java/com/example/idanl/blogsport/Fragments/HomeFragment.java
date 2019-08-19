@@ -58,15 +58,7 @@ public class HomeFragment extends Fragment {
         mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
         mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
-        mPostListViewModel.getAllPosts().observe(this, new Observer<LinkedList<Post>>() {
-            @Override
-            public void onChanged(@Nullable final LinkedList<Post> posts){
 
-                adapter.setPosts(posts);
-            }
-
-
-        });
     }
 
     @Override
@@ -87,6 +79,8 @@ public class HomeFragment extends Fragment {
                     public void onChanged(@Nullable final LinkedList<Post> posts){
 
                         adapter.setPosts(posts);
+                        postRecyclerView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
 
                     }
 

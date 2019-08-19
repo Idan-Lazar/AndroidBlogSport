@@ -66,27 +66,38 @@ public class ModelFirebasePost extends ModelFirebase {
 
     void activateGetAllPostsListener(final PostRepository.GetAllPostsListener listener) {
         if (isNetworkConnected()) {
-            this.setGetAllPostsListener(db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            this.setGetAllPostsListener(db.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                     if (e != null) {
                         Log.d("Firestore", "Error:" + e.getMessage());
                     } else {
-                        if (!isNetworkConnected()) {
-                            listener.onError();
-                        } else {
-                            final LinkedList<Post> data = new LinkedList<>();
-                            for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()
-                            ) {
-                                Post p = doc.toObject(Post.class);
+                        db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if (!isNetworkConnected()) {
+                                    listener.onError();
+                                } else {
+                                    final LinkedList<Post> data = new LinkedList<>();
+                                    for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()
+                                    ) {
+                                        Post p = doc.toObject(Post.class);
 
-                                data.add(p);
+                                        data.add(p);
 
+                                    }
+                                    Log.d("FIrebase", "onEvent: firebase getall posts"+ " "+ data.size());
+                                    listener.onResponse(data);
+
+                                }
                             }
-                            Log.d("FIrebase", "onEvent: firebase getall posts"+ " "+ data.size());
-                            listener.onResponse(data);
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                listener.onError();
+                            }
+                        });
 
-                        }
                     }
                 }
             }));

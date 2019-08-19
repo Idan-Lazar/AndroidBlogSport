@@ -1,6 +1,7 @@
 package com.example.idanl.blogsport.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.SubMenuBuilder;
@@ -8,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
@@ -105,6 +107,19 @@ public class MainActivity extends AppCompatActivity {
         //if i want the title will be the same
         NavigationUI.setupActionBarWithNavController(this,navController);
         mToolbar.setTitle("BlogSport");
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+              switch(destination.getId()){
+                  case(R.id.profileFragment):
+                  case(R.id.writersFragment):
+                      assert getSupportActionBar()!=null;
+                      getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+              }
+
+            }
+        });
 
 
     }
@@ -131,11 +146,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             return navController.navigateUp();
-        }
-        if (item.getItemId() == R.id.writersFragment)
-        {
-            navController.navigate(R.id.action_global_writersFragment);
-            return NavigationUI.onNavDestinationSelected(item,navController);
         }
         else{
             return NavigationUI.onNavDestinationSelected(item,navController);

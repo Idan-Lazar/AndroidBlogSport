@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -85,15 +86,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        assert getArguments()!=null;
-        assert getActivity()!=null;
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        usedId = ProfileFragmentArgs.fromBundle(getArguments()).getUserId();
-        if (usedId.equals("profile"))
-        {
-            usedId = userViewModel.getUid();
-            //((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @SuppressLint("RestrictedApi")
@@ -102,6 +100,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View  v = inflater.inflate(R.layout.fragment_profile, container, false);
+
         signOutButton = v.findViewById(R.id.user_profile_signout_button);
         editProfileButton= v.findViewById(R.id.user_profile_edit_button);
         nameTextView = v.findViewById(R.id.user_profile_name_tv);
@@ -114,6 +113,15 @@ public class ProfileFragment extends Fragment {
         postRecyclerView.setHasFixedSize(true);
         postRecyclerView.setItemAnimator(new DefaultItemAnimator());
         postRecyclerView.setAdapter(adapter);
+        assert getArguments()!=null;
+        assert getActivity()!=null;
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        usedId = ProfileFragmentArgs.fromBundle(getArguments()).getUserId();
+        if (usedId.equals("profile"))
+        {
+            usedId = userViewModel.getUid();
+
+        }
         UserProfileViewModelFactory factory = new UserProfileViewModelFactory(getActivity().getApplication(),usedId);
         userProfileViewModel = ViewModelProviders.of(this,factory).get(UserProfileViewModel.class);
         userProfileViewModel.getUser().observe(this, new Observer<User>() {
