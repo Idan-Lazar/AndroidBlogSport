@@ -34,6 +34,7 @@ public class UserRepository {
 
     }
 
+
     public boolean isSigned() {
         if (modelFirebaseUser.isSigned())
         {
@@ -239,4 +240,42 @@ listener.onOffiline();
         void onError(Exception e);
     }
 
+    public interface ChangeMailListener{
+        void onComplete();
+        void onOffline();
+        void onError(Exception e);
+    }
+    public interface ChangePassListener{
+        void onComplete();
+        void onOffline();
+        void onError(Exception e);
+    }
+
+    public interface CancleUserListener{
+        void onComplete();
+        void onOffline();
+        void onError(Exception e);
+    }
+
+    public void changeMail(String mail, ChangeMailListener listener)
+    {
+        modelFirebaseUser.changeMail(mail, listener);
+    }
+
+    public void changePass(String pass, ChangePassListener listener)
+    {
+        modelFirebaseUser.changePass(pass, listener);
+    }
+
+    public interface ExistUserListener {
+        void onExist();
+        void onNotExist();
+        void onOffline();
+        void onError(Exception e);
+    }
+
+    public void isUserExist(String userId, ExistUserListener listener)
+    {
+        modelFirebaseUser.isUserExist(userId, listener);
+    }
 }

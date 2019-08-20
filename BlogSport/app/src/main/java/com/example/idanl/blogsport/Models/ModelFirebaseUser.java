@@ -46,6 +46,54 @@ public class ModelFirebaseUser extends ModelFirebase {
         this.getAllUsersListener = getAllUsersListener;
     }
 
+    public void changePass(String pass, final UserRepository.ChangePassListener listener)
+    {
+        if(isNetworkConnected())
+        {
+            getCurrentUser().updatePassword(pass).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    listener.onComplete();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onError(e);
+                }
+            });
+        }
+        else
+        {
+            listener.onOffline();
+        };
+
+
+    }
+    public void changeMail(String mail, final UserRepository.ChangeMailListener listener)
+    {
+        if(isNetworkConnected())
+        {
+            getCurrentUser().updateEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    listener.onComplete();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onError(e);
+                }
+            });
+        }
+        else
+        {
+            listener.onOffline();
+        };
+
+
+    }
+
+
     void activateGetAllUsersListener(final UserRepository.GetAllUsersListener listener) {
 
         this.setGetAllUsersListener(db.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -214,56 +262,64 @@ public class ModelFirebaseUser extends ModelFirebase {
             listener.onOffiline();
         }
     }
+    public void updateProfile(String name, final Uri uri, final FirebaseUser currentUser, final UserRepository.UpdateUserInfoListener listener)
+    {
+        UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(name).setPhotoUri(uri).build();
+        Log.d("Register image user", "onComplete: Update user " + name );
+        currentUser.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    String email = currentUser.getEmail();
+                    if (email != null) {
+                        assert currentUser.getPhotoUrl() != null;
+                        User user = new User(currentUser.getUid(), email, currentUser.getDisplayName(), uri.toString());
+                        db.collection("Users").document(currentUser.getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                listener.onSuccess(uri.toString());
+                            }
+
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                listener.onFailer(e);
+                            }
+                        });
+
+
+                    }
+
+                }
+            }
+        });
+    }
 
     public void updateUserInfo(final String userName, final Uri pickerImgUri, final FirebaseUser currentUser, final UserRepository.UpdateUserInfoListener listener)
     {
         if (isNetworkConnected()) {
-            saveUserImage(pickerImgUri, new UserRepository.SaveImageListener() {
-                @Override
-                public void onComplete(final Uri uri) {
+            if (currentUser.getPhotoUrl() != null && currentUser.getPhotoUrl().equals(pickerImgUri)) {
+                updateProfile(userName,pickerImgUri,currentUser,listener);
+            } else {
+                saveUserImage(pickerImgUri, new UserRepository.SaveImageListener() {
+                    @Override
+                    public void onComplete(final Uri uri) {
 
-                    UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder().setDisplayName(userName).setPhotoUri(uri).build();
-                    Log.d("Register image user", "onComplete: Update user "+ uri.toString());
-                    currentUser.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                String email = currentUser.getEmail();
-                                if (email!=null)
-                                {
-                                    assert currentUser.getPhotoUrl() != null;
-                                    User user = new User(currentUser.getUid(), email, currentUser.getDisplayName(),uri.toString());
-                                    db.collection("Users").document(currentUser.getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            listener.onSuccess(uri.toString());
-                                        }
+                       updateProfile(userName,uri,currentUser,listener);
 
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            listener.onFailer(e);
-                                        }
-                                    });
+                    }
 
+                    @Override
+                    public void onOffline() {
+                        listener.onOffiline();
+                    }
 
-                                }
-
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onOffline() {
-                    listener.onOffiline();
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    listener.onFailer(e);
-                }
-            });
+                    @Override
+                    public void onError(Exception e) {
+                        listener.onFailer(e);
+                    }
+                });
+            }
         }
         else{
             listener.onOffiline();
@@ -308,27 +364,33 @@ public class ModelFirebaseUser extends ModelFirebase {
         });
     }
 
-    public void getUser(String id, final UserRepository.GetUserListener listener) {
+    public void getUser(final String id, final UserRepository.GetUserListener listener) {
         if (isNetworkConnected())
         {
-            db.collection("Users").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            db.collection("Users").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot snapshot = task.getResult();
-                        if (snapshot != null)
-                        {
-                            User user = snapshot.toObject(User.class);
-                            if (user!=null)
-                            {
-                                listener.onResponse(user);
-                            }
-                        }}}}).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    listener.onError();
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    db.collection("Users").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot snapshot = task.getResult();
+                                if (snapshot != null)
+                                {
+                                    User user = snapshot.toObject(User.class);
+                                    if (user!=null)
+                                    {
+                                        listener.onResponse(user);
+                                    }
+                                }}}}).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onError();
+                        }
+                    });
                 }
             });
+
         }
 
 
@@ -336,5 +398,32 @@ public class ModelFirebaseUser extends ModelFirebase {
     }
 
 
+    public void isUserExist(String userId, final UserRepository.ExistUserListener listener) {
+       if(isNetworkConnected())
+       {
+           db.collection("Users").whereEqualTo("uid", userId).whereEqualTo("valid",true).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+               @Override
+               public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                   if(queryDocumentSnapshots.isEmpty())
+                   {
+listener.onNotExist();
+                   }
+                   else
+                   {
+                       listener.onExist();
+                   }
+               }
+           }).addOnFailureListener(new OnFailureListener() {
+               @Override
+               public void onFailure(@NonNull Exception e) {
+                   listener.onError(e);
+               }
+           });
+       }
+       else
+       {
+           listener.onOffline();
+       }
 
+    }
 }

@@ -49,7 +49,7 @@ public class UserProfileViewModel extends AndroidViewModel {
                 UserRepository.instance.getUserFirebase(this.userId, new UserRepository.GetUserListener() {
                     @Override
                     public void onResponse(User p) {
-                        Log.d("TAG","user received from firebase" + userId );
+                        Log.d("TAG","user received from firebase" + p.getName() );
                         setValue(p);
                         UserAsyncDao.insertUser(p);
                     }

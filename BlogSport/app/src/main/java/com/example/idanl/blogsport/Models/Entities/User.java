@@ -6,8 +6,10 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "user_table")
-public class User {
+public class User implements Serializable {
     @Ignore
     public User() {
     }
@@ -44,24 +46,39 @@ public class User {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) throws Exception {
+
+        if(!name.isEmpty())
+            this.name= name;
+        else
+        {
+            throw new Exception("Name is not filled!");
+        }
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String email) throws Exception {
+        if(!email.isEmpty())
+            this.email = email;
+        else
+        {
+            throw new Exception("Email is not filled!");
+        }
+
     }
 
     public String getUserImage() {
         return userImage;
     }
 
-    public void setUserImage(String userImage) {
-        this.userImage = userImage;
+    public void setUserImage(String userImage) throws Exception {
+        if(!userImage.isEmpty())
+            this.userImage = userImage;
+        else
+            throw new Exception("Image is not selected!");
     }
 
 

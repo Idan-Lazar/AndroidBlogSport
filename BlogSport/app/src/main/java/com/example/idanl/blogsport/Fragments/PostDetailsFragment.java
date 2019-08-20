@@ -112,6 +112,7 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
         super.onCreate(savedInstanceState);
 
 
+
     }
 
     @Override
@@ -138,6 +139,7 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_post_details, container, false);
+
         tv_Title = v.findViewById(R.id.post_d_title);
         tv_SecondTitle = v.findViewById(R.id.post_d_sec_title);
         tv_Category = v.findViewById(R.id.post_d_category);

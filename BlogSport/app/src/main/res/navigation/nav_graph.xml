@@ -110,4 +110,14 @@
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"
         app:popUpTo="@id/nav_graph" />
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="com.example.idanl.blogsport.Fragments.EditUserFragment"
+        android:label="Edit User"
+        tools:layout="@layout/fragment_edit_user">
+        <argument
+            android:name="user"
+            app:argType="com.example.idanl.blogsport.Models.Entities.User" />
+    </fragment>
+    <action android:id="@+id/action_global_editUserFragment" app:destination="@id/editUserFragment" />
 </navigation>
