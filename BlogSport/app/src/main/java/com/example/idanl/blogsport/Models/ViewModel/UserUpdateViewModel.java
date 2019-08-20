@@ -13,13 +13,20 @@ public class UserUpdateViewModel extends AndroidViewModel {
     public UserUpdateViewModel(Application application) {
         super(application);
     }
-    public void updatePost(Post post, PostRepository.InsertPostListener listener) { PostRepository.instance.updatePost(post,listener); }
 
-    public void updateUserIndo(String name,Uri imageBitmap, UserRepository.UpdateUserInfoListener listener) {
-        UserRepository.instance.updateUserInfo(name,imageBitmap, listener);
-    }
-    public void isUserValid(String userId, UserRepository.ExistUserListener listener)
+    public void changePass(final String pass, final UserRepository.ChangePassListener listener)
     {
-        UserRepository.instance.isUserValid(userId, listener);
+        UserRepository.instance.changePass(pass, listener);
+    }
+    public void changeMail(final String mail, final UserRepository.ChangeMailListener listener)
+    {
+        UserRepository.instance.changeMail(mail, listener);
+    }
+    public void updateUserInfo(final String userName, Uri pickerImgUri, final UserRepository.UpdateUserInfoListener listener) {
+        UserRepository.instance.updateUserInfo(userName,pickerImgUri,listener);
+    }
+    public void isUserExist(String userId, UserRepository.ExistUserListener listener)
+    {
+        UserRepository.instance.isUserExist(userId, listener);
     }
 }
