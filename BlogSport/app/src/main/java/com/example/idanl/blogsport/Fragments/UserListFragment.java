@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
 
+import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Adapters.UserAdapter;
 import com.example.idanl.blogsport.Helper.SpacesItemDecoration;
@@ -50,7 +51,6 @@ public class UserListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         inflater.inflate(R.menu.search_menu, menu);
         final MenuItem search = menu.findItem(R.id.app_bar_search);
         final SearchView searchView = (SearchView) search.getActionView();
@@ -59,6 +59,7 @@ public class UserListFragment extends Fragment {
             @Override
             public boolean onClose() {
                 adapter.getFilter().filter("");
+                ((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
                 return false;
             }
         });
@@ -79,7 +80,19 @@ public class UserListFragment extends Fragment {
 
 
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        switch (id){
+            case (R.id.app_bar_search):
+                ((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
+
+        }
+        return true;
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
