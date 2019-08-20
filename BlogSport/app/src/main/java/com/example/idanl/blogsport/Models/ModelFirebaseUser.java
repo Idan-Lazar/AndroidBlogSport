@@ -215,7 +215,7 @@ public class ModelFirebaseUser extends ModelFirebase {
         }
     }
 
-    public void updateUserInfo(final String userName, final Uri pickerImgUri, final FirebaseUser currentUser, final UserRepository.UpdateUserInfoListener listener)
+    public void updateUserInfo(final String userName, final Uri pickerImgUri, final String user_email, final FirebaseUser currentUser, final UserRepository.UpdateUserInfoListener listener)
     {
         if (isNetworkConnected()) {
             saveUserImage(pickerImgUri, new UserRepository.SaveImageListener() {
@@ -228,7 +228,7 @@ public class ModelFirebaseUser extends ModelFirebase {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                String email = currentUser.getEmail();
+                                String email = user_email;
                                 if (email!=null)
                                 {
                                     assert currentUser.getPhotoUrl() != null;
@@ -336,5 +336,27 @@ public class ModelFirebaseUser extends ModelFirebase {
     }
 
 
-
+    public void isUserValid(String userId, final UserRepository.ExistUserListener listener) {
+        if(isNetworkConnected()) {
+            db.collection("Users").whereEqualTo("uid", userId).whereEqualTo("valid", true).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.isInvalid();
+                    } else {
+                        listener.isValid();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onError(e);
+                }
+            });
+        }
+        else
+        {
+            listener.onOffline();
+        }
+    }
 }

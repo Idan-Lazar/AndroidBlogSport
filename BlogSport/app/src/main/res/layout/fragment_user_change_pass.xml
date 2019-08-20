@@ -67,7 +67,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_Email_user_edit" />
 
         <Button
-            android:id="@+id/user_change_pass_send_button"
+            android:id="@+id/user__change_pass_send_button"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="100dp"
@@ -92,10 +92,10 @@
             android:layout_height="wrap_content"
             android:background="@drawable/circle_style"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/user_change_pass_send_button"
-            app:layout_constraintEnd_toEndOf="@+id/user_change_pass_send_button"
-            app:layout_constraintStart_toStartOf="@+id/user_change_pass_send_button"
-            app:layout_constraintTop_toTopOf="@+id/user_change_pass_send_button" />
+            app:layout_constraintBottom_toBottomOf="@+id/user_edit_send_button"
+            app:layout_constraintEnd_toEndOf="@+id/user_edit_send_button"
+            app:layout_constraintStart_toStartOf="@+id/user_edit_send_button"
+            app:layout_constraintTop_toTopOf="@+id/user_edit_send_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
