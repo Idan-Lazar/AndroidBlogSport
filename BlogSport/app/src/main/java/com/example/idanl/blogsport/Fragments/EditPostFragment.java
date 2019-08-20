@@ -76,11 +76,11 @@ public class EditPostFragment extends Fragment {
         postUpdateViewModel = ViewModelProviders.of(this).get(PostUpdateViewModel.class);
         muserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        tv_Title = v.findViewById(R.id.post_edit_title);
-        tv_SecondTitle = v.findViewById(R.id.post_edit_second_title);
+        tv_Title = v.findViewById(R.id.user_change_first_pass_text_view);
+        tv_SecondTitle = v.findViewById(R.id.user_chnage_password_second_text_view);
         tv_Category = v.findViewById(R.id.post_edit_category);
         tv_Content = v.findViewById(R.id.post_edit_content);
-        btn_Edit = v.findViewById(R.id.post_edit_send);
+        btn_Edit = v.findViewById(R.id.user_disable_acount_button);
         im_PostImage = v.findViewById(R.id.image_post_post_edit);
         progressBar = v.findViewById(R.id.post_edit_progressBar);
         layout = v.findViewById(R.id.layout_post_edit);

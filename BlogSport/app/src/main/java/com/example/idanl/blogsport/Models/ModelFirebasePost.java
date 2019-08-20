@@ -257,8 +257,8 @@ public class ModelFirebasePost extends ModelFirebase {
     }
 
 
-    public void activatePostsPerUserListener(String userId, final PostRepository.GetAllPostsListener listener) {
-        this.setGetPostsPerUserListener(db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).whereEqualTo("userId", userId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+    public void activatePostsPerUserListener(final String userId, final PostRepository.GetAllPostsListener listener) {
+        this.setGetPostsPerUserListener(db.collection("Posts").whereEqualTo("userId", userId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e!=null){
@@ -266,22 +266,33 @@ public class ModelFirebasePost extends ModelFirebase {
                 }
                 else
                 {
-                    Log.d("FIrebase", "onEvent: firebase getall posts");
-                    if (!isNetworkConnected())
-                    {
-                        listener.onError();
-                    }
-                    else {
-                        final LinkedList<Post> data = new LinkedList<>();
-                        for (DocumentSnapshot doc : queryDocumentSnapshots
-                        ) {
-                            Post p = doc.toObject(Post.class);
-                            data.add(p);
+                    db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).whereEqualTo("userId", userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            Log.d("FIrebase", "onEvent: firebase getall posts");
+                            if (!isNetworkConnected())
+                            {
+                                listener.onError();
+                            }
+                            else {
+                                final LinkedList<Post> data = new LinkedList<>();
+                                for (DocumentSnapshot doc : queryDocumentSnapshots
+                                ) {
+                                    Post p = doc.toObject(Post.class);
+                                    data.add(p);
 
+                                }
+                                listener.onResponse(data);
+
+                            }
                         }
-                        listener.onResponse(data);
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onError();
+                        }
+                    });
 
-                    }
                 }
             }
         }));

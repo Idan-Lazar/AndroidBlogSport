@@ -1,9 +1,6 @@
 package com.example.idanl.blogsport.Models.Entities;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigator;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -23,6 +20,9 @@ public class User {
     private String name;
     @NonNull
     private String email;
+
+    @NonNull
+    private boolean valid = true;
 
     private String userImage;
     public User(@NonNull String uid,@NonNull String email, String name,  String userImage) {
@@ -65,4 +65,11 @@ public class User {
     }
 
 
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 }

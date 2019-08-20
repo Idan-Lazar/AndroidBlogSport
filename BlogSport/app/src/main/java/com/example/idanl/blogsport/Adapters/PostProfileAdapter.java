@@ -60,7 +60,7 @@ public class PostProfileAdapter extends RecyclerView.Adapter<PostProfileAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull final  MyViewHolder holder, int position) {
-
+        holder.progressBar.setVisibility(View.VISIBLE);
         holder.layout.setVisibility(View.INVISIBLE);
         final Post post = mPosts.get(position);
         holder.tvWriterName.setText(post.getUserName());
@@ -72,6 +72,7 @@ public class PostProfileAdapter extends RecyclerView.Adapter<PostProfileAdapter.
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 holder.progressBar.setVisibility(View.INVISIBLE);
+                holder.layout.setVisibility(View.VISIBLE);
                 return false;
             }
 
