@@ -347,6 +347,34 @@ public class ModelFirebaseUser extends ModelFirebase {
             }
         });
     }
+
+    private void updateUserInfoComments(User user)
+    {
+        final HashMap<String,Object> m = new HashMap<>();
+        m.put("userName",user.getName());
+        m.put("userImage",user.getUserImage());
+        db.collectionGroup("Comments").whereEqualTo("userId",user.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                WriteBatch batch = db.batch();
+                for (QueryDocumentSnapshot doc: queryDocumentSnapshots
+                ) {
+                    batch.update(doc.getReference(),m);
+                }
+                batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Comments", "onFailure: "+ e.getMessage());
+            }
+        });
+    }
     private void UsersChangeListener()
     {
         db.collection("Users").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -358,6 +386,7 @@ public class ModelFirebaseUser extends ModelFirebase {
                     {
                         User u = doc.getDocument().toObject(User.class);
                         updateUserInfoPosts(u);
+                        updateUserInfoComments(u);
                     }
                 }
             }
@@ -394,36 +423,6 @@ public class ModelFirebaseUser extends ModelFirebase {
         }
 
 
-
-    }
-
-
-    public void isUserExist(String userId, final UserRepository.ExistUserListener listener) {
-       if(isNetworkConnected())
-       {
-           db.collection("Users").whereEqualTo("uid", userId).whereEqualTo("valid",true).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-               @Override
-               public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                   if(queryDocumentSnapshots.isEmpty())
-                   {
-listener.onNotExist();
-                   }
-                   else
-                   {
-                       listener.onExist();
-                   }
-               }
-           }).addOnFailureListener(new OnFailureListener() {
-               @Override
-               public void onFailure(@NonNull Exception e) {
-                   listener.onError(e);
-               }
-           });
-       }
-       else
-       {
-           listener.onOffline();
-       }
 
     }
 }

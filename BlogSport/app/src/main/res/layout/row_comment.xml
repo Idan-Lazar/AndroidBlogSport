@@ -65,13 +65,15 @@
                 android:layout_height="18dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:gravity="center|left"
+                android:layout_marginTop="2dp"
+                android:gravity="left"
                 android:text="TextView"
                 android:textColor="#121212"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/item_user_image_card"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/comment_item_user"
                 tools:text="@tools:sample/lorem" />
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -90,13 +92,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:gravity="center|left"
+                android:gravity="left"
                 android:text="tgdfgfggfdgdfgdfgdgfdg"
                 android:textColor="#121212"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/item_user_image_card"
-                app:layout_constraintTop_toBottomOf="@+id/comment_item_content"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="@tools:sample/lorem" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>

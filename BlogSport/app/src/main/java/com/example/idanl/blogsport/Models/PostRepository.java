@@ -15,8 +15,7 @@ public class PostRepository {
     final public static PostRepository instance = new PostRepository();
     private PostDao mPostDao;
     ModelFirebasePost modelFirebase = ModelFirebasePost.instance;
-
-    public interface ExistPostListener {
+    private PostListLiveData postListLiveData = new PostListLiveData();    public interface ExistPostListener {
         void onExist();
         void onNotExist();
         void onOffline();
@@ -26,12 +25,66 @@ public class PostRepository {
         modelFirebase.isPostExist(postKey, listener);
     }
 
+    public LiveData<LinkedList<Post>> getAllPosts()
+    {
+        return postListLiveData;
+    }
 
-    PostRepository() {
+    private PostRepository() {
         AppLocalDbRepository db = ModelSql.db;
 
     }
+    class PostListLiveData extends MutableLiveData<LinkedList<Post>> {
+        @Override
+        protected void onActive() {
+            super.onActive();
+            modelFirebase.GetAllPosts(new PostRepository.GetAllPostsListener() {
+                @Override
+                public void onResponse(LinkedList<Post> list) {
+                    Log.d("TAG","FB data = " + list.size() );
 
+                    setValue(list);
+                    PostAsyncDao.deleteAll();
+                    PostAsyncDao.insertPosts(list);
+
+                }
+                public void onError()
+                {
+                    getAllPostsDao(new PostRepository.GetAllPostsListener() {
+                        @Override
+                        public void onResponse(LinkedList<Post> list) {
+                            setValue(list);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+                }
+            });
+
+        }
+        @Override
+        protected void onInactive() {
+            super.onInactive();
+            Log.d("TAG","cancellGetAllStudents");
+        }
+        public PostListLiveData() {
+            super();
+            getAllPostsDao(new PostRepository.GetAllPostsListener() {
+                @Override
+                public void onResponse(LinkedList<Post> list) {
+                    setValue(list);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        }
+    }
 
     public void updatePost (Post p, InsertPostListener listener)
     {
@@ -55,15 +108,8 @@ public class PostRepository {
         PostAsyncDao.getPost(postKey, listener);
     }
 
-    public void activateGetPostsFirebaseListener(GetAllPostsListener listener)
-    {
-        modelFirebase.activateGetAllPostsListener(listener);
-    }
 
-    public void disActivateGetAllPostsListener()
-    {
-        modelFirebase.removeGetAllPostsListener();
-    }
+
     public void getAllPostsDao(GetAllPostsListener listener)
     {
         PostAsyncDao.getAllPosts(listener);

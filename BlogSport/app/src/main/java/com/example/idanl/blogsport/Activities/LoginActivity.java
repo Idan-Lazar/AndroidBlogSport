@@ -1,12 +1,16 @@
 package com.example.idanl.blogsport.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -72,8 +76,15 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    private void enableInputs ( boolean flag)
+    {
 
+        userMail.setEnabled(flag);
+        userPassword.setEnabled(flag);
+        loginPhoto.setEnabled(flag);
+    }
     private void signIn(String mail, String password) {
+        enableInputs(false);
         mUserViewModel.signIn(mail, password, new UserRepository.SignInListener() {
             @Override
             public void onSuccess() {
@@ -85,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailer(Exception e) {
                 showMessage(e.getMessage());
+                enableInputs(true);
                 btnLogin.setVisibility(View.VISIBLE);
                 loginProgress.setVisibility(View.INVISIBLE);
             }
@@ -93,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onOffiline() {
 
                 showMessage("No Internet Connection!");
+                enableInputs(true);
                 btnLogin.setVisibility(View.VISIBLE);
                 loginProgress.setVisibility(View.INVISIBLE);
             }
@@ -110,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
        startActivity(mainActivity);
        finish();
     }
+
 
 
     private void showMessage(String message) {

@@ -1,6 +1,7 @@
 package com.example.idanl.blogsport.Fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.example.idanl.blogsport.Adapters.MyApplication;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,9 +57,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
 
     }
 
@@ -74,10 +74,14 @@ public class HomeFragment extends Fragment {
         postRecyclerView.setHasFixedSize(true);
         postRecyclerView.setItemAnimator(new DefaultItemAnimator());
         postRecyclerView.setAdapter(adapter);
+        postRecyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        mUserViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        mPostListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
         mPostListViewModel.getAllPosts().observe(this, new Observer<LinkedList<Post>>() {
                     @Override
                     public void onChanged(@Nullable final LinkedList<Post> posts){
-
+                        Log.d("Post list", "onChanged: Chnage ");
                         adapter.setPosts(posts);
                         postRecyclerView.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.INVISIBLE);
@@ -92,6 +96,17 @@ public class HomeFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+    }
 
     @Override
     public void onStart() {

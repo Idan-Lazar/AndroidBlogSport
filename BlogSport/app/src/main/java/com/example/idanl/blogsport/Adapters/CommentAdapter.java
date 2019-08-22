@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.idanl.blogsport.Fragments.PostDetailsFragmentDirections;
 import com.example.idanl.blogsport.Models.Entities.Comment;
 import com.example.idanl.blogsport.R;
 
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHolder> {
@@ -96,6 +98,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyViewHo
                 imgCommentUserProfile = itemView.findViewById(R.id.item_user_image_card);
                 viewBackground = itemView.findViewById(R.id.comment_view_background);
                 viewForeground = itemView.findViewById(R.id.comment_view_foreground);
+
+                imgCommentUserProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int position = getAdapterPosition();
+                        Navigation.findNavController(view).navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToUserFragment(mData.get(position).getUserId(),mData.get(position).getUserName()));
+                    }
+                });
             }
 
             public String getUid()

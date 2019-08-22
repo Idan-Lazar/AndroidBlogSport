@@ -1,6 +1,7 @@
 package com.example.idanl.blogsport.Adapters;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,28 +58,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final  MyViewHolder holder, int position) {
-
+        holder.progressBar.setVisibility(View.VISIBLE);
         holder.layout.setVisibility(View.INVISIBLE);
         final Post post = mPosts.get(position);
         holder.tvWriterName.setText(post.getUserName());
-        Glide.with(MyApplication.getContext()).load(post.getUserImage()).into(holder.imgPostProfile);
-        holder.tvTitle.setText(post.getTitle());
-        holder.tvSecondTitle.setText(post.getSecond_title());
-        holder.tvCategory.setText(post.getCategory());
-        Glide.with(MyApplication.getContext()).load(post.getPicture()).listener(new RequestListener<Drawable>() {
+        Glide.with(MyApplication.getContext()).load(post.getPicture()).listener(new RequestListener<Drawable>(){
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                holder.progressBar.setVisibility(View.INVISIBLE);
                 return false;
             }
 
             @Override
             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                holder.progressBar.setVisibility(View.INVISIBLE);
-                holder.layout.setVisibility(View.VISIBLE);
+                Glide.with(MyApplication.getContext()).load(post.getUserImage()).addListener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.progressBar.setVisibility(View.INVISIBLE);
+                        holder.layout.setVisibility(View.VISIBLE);
+                        Log.d("Post load"+post.getPostKey(), "Post Photo loaded: "+post.getPicture());
+                        return false;
+                    }
+                }).into(holder.imgPostProfile);
                 return false;
             }
         }).into(holder.imgPost);
+        holder.tvTitle.setText(post.getTitle());
+        holder.tvSecondTitle.setText(post.getSecond_title());
+        holder.tvCategory.setText(post.getCategory());
 
     }
 

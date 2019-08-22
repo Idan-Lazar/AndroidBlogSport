@@ -135,6 +135,8 @@ public class ProfileFragment extends Fragment {
             public void onChanged(User u) {
                 if(u!=null)
                 {
+                    progressBar.setVisibility(View.VISIBLE);
+                    layout.setVisibility(View.INVISIBLE);
                     user = u;
                     if(u.getUid().equals(userViewModel.getUid()))
                     {
@@ -186,6 +188,7 @@ public class ProfileFragment extends Fragment {
         editProfileButton.setVisibility(View.VISIBLE);
         signOutButton.setVisibility(View.VISIBLE);
     }
+
 
     public void populate()
     {

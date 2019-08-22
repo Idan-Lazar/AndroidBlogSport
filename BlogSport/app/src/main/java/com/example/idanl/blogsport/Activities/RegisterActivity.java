@@ -2,13 +2,17 @@ package com.example.idanl.blogsport.Activities;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -114,10 +118,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
         private void enableInputs ( boolean flag)
         {
+
             userEmail.setEnabled(flag);
             userName.setEnabled(flag);
             userPassword.setEnabled(flag);
             userPassword2.setEnabled(flag);
+            signin_btn.setEnabled(flag);
         }
         private void CreateUserAccount( final UserAuth userAuth){
 

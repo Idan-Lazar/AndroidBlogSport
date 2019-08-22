@@ -35,15 +35,7 @@ import java.util.concurrent.AbstractExecutorService;
 public class ModelFirebasePost extends ModelFirebase {
     final public static ModelFirebasePost instance = new ModelFirebasePost();
 
-    public ListenerRegistration getGetAllPostsListener() {
-        return getAllPostsListener;
-    }
 
-    public void setGetAllPostsListener(ListenerRegistration getAllPostsListener) {
-        this.getAllPostsListener = getAllPostsListener;
-    }
-
-    private ListenerRegistration getAllPostsListener;
 
     public ListenerRegistration getGetPostsPerUserListener() {
         return getPostsPerUserListener;
@@ -64,13 +56,13 @@ public class ModelFirebasePost extends ModelFirebase {
 
     }
 
-    void activateGetAllPostsListener(final PostRepository.GetAllPostsListener listener) {
+    void GetAllPosts(final PostRepository.GetAllPostsListener listener) {
         if (isNetworkConnected()) {
-            this.setGetAllPostsListener(db.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            db.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                     if (e != null) {
-                        Log.d("Firestore", "Error:" + e.getMessage());
+                        Log.d("Firestore getall Error", "Error:" + e.getMessage());
                     } else {
                         db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
@@ -82,7 +74,6 @@ public class ModelFirebasePost extends ModelFirebase {
                                     for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()
                                     ) {
                                         Post p = doc.toObject(Post.class);
-
                                         data.add(p);
 
                                     }
@@ -100,17 +91,14 @@ public class ModelFirebasePost extends ModelFirebase {
 
                     }
                 }
-            }));
+            });
         }
         else
         {
             listener.onError();
         }
     }
-    void removeGetAllPostsListener()
-    {
-        this.getAllPostsListener.remove();
-    }
+
 
     void addPost(Post p, final PostRepository.InsertPostListener listener) {
         if (isNetworkConnected())
@@ -124,6 +112,7 @@ public class ModelFirebasePost extends ModelFirebase {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     listener.onComplete(task.isSuccessful());
+
                 }
 
 
@@ -262,14 +251,14 @@ public class ModelFirebasePost extends ModelFirebase {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e!=null){
-                    Log.d("Firestore","Error:"+e.getMessage());
+                    Log.e("Firestore","Error:"+e.getMessage());
                 }
                 else
                 {
                     db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("deleted", false).whereEqualTo("userId", userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            Log.d("FIrebase", "onEvent: firebase getall posts");
+                            Log.d("FIrebase", "onEvent: firebase get posts per user");
                             if (!isNetworkConnected())
                             {
                                 listener.onError();
@@ -299,6 +288,7 @@ public class ModelFirebasePost extends ModelFirebase {
     }
 
     public void removePostsPerUserListener() {
-        getPostsPerUserListener.remove();
+        if(this.getPostsPerUserListener!=null)
+            this.getPostsPerUserListener.remove();
     }
 }

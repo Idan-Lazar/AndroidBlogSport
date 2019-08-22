@@ -16,7 +16,9 @@ import androidx.navigation.ui.NavigationUI;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -33,6 +35,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -188,14 +191,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void iniPopup() {
-        popAddPost = new Dialog(this);
 
+        popAddPost = new Dialog(this);
         popAddPost.setContentView((R.layout.popup_add_post));
         popAddPost.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         popAddPost.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popAddPost.getWindow().setLayout(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.WRAP_CONTENT);
         popAddPost.getWindow().getAttributes().gravity = Gravity.TOP;
-
 
         //ini popup widgiets
         popupUserImage = popAddPost.findViewById(R.id.popup_user_image);
@@ -217,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
         popupAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 popupAddBtn.setVisibility(View.INVISIBLE);
                 popupClickProgress.setVisibility(View.VISIBLE);
                 enable_input(false);
@@ -271,10 +272,11 @@ public class MainActivity extends AppCompatActivity {
                     showMessage("Post Added successfully");
                     popupAddBtn.setVisibility(View.VISIBLE);
                     popupClickProgress.setVisibility(View.INVISIBLE);
-                    popAddPost.dismiss();
+                    popAddPost.hide();
                     iniPopup();
                     setupPopupImageClick();
                     enable_input(true);
+
                 }
             }
 

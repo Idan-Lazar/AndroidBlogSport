@@ -79,17 +79,7 @@ public class UserRepository {
         UserAsyncDao.getUser(postKey, listener);
     }
 
-    public void isUserValid(String userId, ExistUserListener listener) {
-        modelFirebaseUser.isUserValid(userId,listener);
-    }
 
-    public interface ExistUserListener {
-        void isValid();
-        void isInvalid();
-        void onOffline();
-        void onError(Exception c);
-
-    }
 
     class UserListLiveData extends MutableLiveData<List<User>> {
         @Override
@@ -201,9 +191,9 @@ listener.onOffiline();
         void onFailer(Exception e);
         void onOffiline();
     }
-    public void updateUserInfo(final String userName, Uri pickerImgUri, String email, final UpdateUserInfoListener listener)
+    public void updateUserInfo(final String userName, Uri pickerImgUri, final UpdateUserInfoListener listener)
     {
-        modelFirebaseUser.updateUserInfo(userName, pickerImgUri, email, modelFirebaseUser.getCurrentUser(), new UpdateUserInfoListener() {
+        modelFirebaseUser.updateUserInfo(userName, pickerImgUri, modelFirebaseUser.getCurrentUser(), new UpdateUserInfoListener() {
             @Override
             public void onSuccess(String uri) {
                 assert modelFirebaseUser.getCurrentUser().getPhotoUrl()!=null;
@@ -279,15 +269,5 @@ listener.onOffiline();
         modelFirebaseUser.changePass(pass, listener);
     }
 
-    public interface ExistUserListener {
-        void onExist();
-        void onNotExist();
-        void onOffline();
-        void onError(Exception e);
-    }
 
-    public void isUserExist(String userId, ExistUserListener listener)
-    {
-        modelFirebaseUser.isUserExist(userId, listener);
-    }
 }

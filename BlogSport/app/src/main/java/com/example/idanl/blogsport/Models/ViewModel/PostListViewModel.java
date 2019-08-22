@@ -22,59 +22,9 @@ public class PostListViewModel extends AndroidViewModel {
 
     public PostListViewModel(Application application) {
         super(application);
-        data = new PostListLiveData();
+        data = PostRepository.instance.getAllPosts();
     }
-    class PostListLiveData extends MutableLiveData<LinkedList<Post>> {
-        @Override
-        protected void onActive() {
-            super.onActive();
-            PostRepository.instance.activateGetPostsFirebaseListener(new PostRepository.GetAllPostsListener() {
-                @Override
-                public void onResponse(LinkedList<Post> list) {
-                    Log.d("TAG","FB data = " + list.size() );
-                    setValue(list);
-                    PostAsyncDao.deleteAll();
-                    PostAsyncDao.insertPosts(list);
 
-                }
-                public void onError()
-                {
-                    PostRepository.instance.getAllPostsDao(new PostRepository.GetAllPostsListener() {
-                        @Override
-                        public void onResponse(LinkedList<Post> list) {
-                            setValue(list);
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
-                }
-            });
-
-        }
-        @Override
-        protected void onInactive() {
-            super.onInactive();
-            PostRepository.instance.disActivateGetAllPostsListener();
-            Log.d("TAG","cancellGetAllStudents");
-        }
-        public PostListLiveData() {
-            super();
-            PostRepository.instance.getAllPostsDao(new PostRepository.GetAllPostsListener() {
-                @Override
-                public void onResponse(LinkedList<Post> list) {
-                    setValue(list);
-                }
-
-                @Override
-                public void onError() {
-
-                }
-            });
-        }
-    }
     public LiveData<LinkedList<Post>> getAllPosts() { return data;}
 
 

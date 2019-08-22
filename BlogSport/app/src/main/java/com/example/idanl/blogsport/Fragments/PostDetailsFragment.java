@@ -138,7 +138,7 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_post_details, container, false);
+        final View v = inflater.inflate(R.layout.fragment_post_details, container, false);
 
         tv_Title = v.findViewById(R.id.post_d_title);
         tv_SecondTitle = v.findViewById(R.id.post_d_sec_title);
@@ -207,46 +207,55 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
         progressBar.setVisibility(View.VISIBLE);
         comment_ProgressBar.setVisibility(View.INVISIBLE);
         btn_add_comment.setVisibility(View.VISIBLE);
-
+        image_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToUserFragment(p.getUserId(),p.getUserName()));
+            }
+        });
 
                 btn_add_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        comment_ProgressBar.setVisibility(View.VISIBLE);
-                        btn_add_comment.setVisibility(View.INVISIBLE);
+                        enable(false);
                         String comment_content = et_comment.getText().toString();
                         String uid = mUserViewModel.getUid();
                         String uname = mUserViewModel.getDisplayName();
                         String uimg = mUserViewModel.getUserImageUrl().toString();
-                        Comment c = new Comment(comment_content,p.getPostKey(),uid,uimg,uname);
-                        mcommentListViewModel.addComment(c, new CommentRepository.InsertCommentListener() {
-                            @Override
-                            public void onComplete(boolean success) {
-                                showMessage("Comment added");
-                                et_comment.setText("");
-                                comment_ProgressBar.setVisibility(View.INVISIBLE);
-                                btn_add_comment.setVisibility(View.VISIBLE);
-                                if(getActivity()!=null)
-                                {
-                                    ((MainActivity) getActivity()).hideKeyboard();
+                        if (!comment_content.isEmpty())
+                        {
+                            Comment c = new Comment(comment_content,p.getPostKey(),uid,uimg,uname);
+                            mcommentListViewModel.addComment(c, new CommentRepository.InsertCommentListener() {
+                                @Override
+                                public void onComplete(boolean success) {
+                                    showMessage("Comment added");
+                                    et_comment.setText("");
+                                    enable(true);
+                                    if(getActivity()!=null)
+                                    {
+                                        ((MainActivity) getActivity()).hideKeyboard();
+                                    }
+                                    //mcommentListViewModel.notifyChange();
                                 }
-                                //mcommentListViewModel.notifyChange();
-                            }
 
-                            @Override
-                            public void onError(Exception e) {
-                                showMessage("Fail to add comment " + e.getMessage());
-                                comment_ProgressBar.setVisibility(View.INVISIBLE);
-                                btn_add_comment.setVisibility(View.VISIBLE);
-                            }
+                                @Override
+                                public void onError(Exception e) {
+                                    showMessage("Fail to add comment " + e.getMessage());
+                                    enable(true);
+                                }
 
-                            @Override
-                            public void onOffline() {
-                                showMessage("No Internet Connection!");
-                                comment_ProgressBar.setVisibility(View.INVISIBLE);
-                                btn_add_comment.setVisibility(View.VISIBLE);
-                            }
-                        });
+                                @Override
+                                public void onOffline() {
+                                    showMessage("No Internet Connection!");
+                                    enable(true);
+                                }
+                            });
+                        }
+                        else
+                        {
+                           enable(true);
+                            showMessage("Comment is Empty!");
+                        }
 
                     }
                 });
@@ -255,6 +264,20 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
 
 
         return v;
+    }
+    public void enable(boolean flag)
+    {
+        if(flag)
+        {
+            comment_ProgressBar.setVisibility(View.INVISIBLE);
+            btn_add_comment.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            comment_ProgressBar.setVisibility(View.VISIBLE);
+            btn_add_comment.setVisibility(View.INVISIBLE);
+        }
+        et_comment.setActivated(flag);
     }
     public void populate() {
         if (p != null) {
@@ -423,7 +446,6 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
             mcommentListViewModel.removeComment(c, new CommentRepository.RemoveCommentListener() {
                 @Override
                 public void onRemove() {
-                    commentAdapter.removeItem(deletedIndex);
                     Snackbar snackbar = Snackbar.make(rootLayout, "Your comment removed!", Snackbar.LENGTH_SHORT);
                     snackbar.setAction("UNDO", new View.OnClickListener() {
                         @Override
@@ -432,7 +454,6 @@ public class PostDetailsFragment extends Fragment implements CommentItemTouchHel
                                 @Override
                                 public void onComplete(boolean success) {
                                     showMessage("Comment added back");
-                                    commentAdapter.restoreItem(c,deletedIndex);
                                 }
 
                                 @Override

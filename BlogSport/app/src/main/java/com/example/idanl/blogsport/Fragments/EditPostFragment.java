@@ -32,6 +32,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Models.Entities.Post;
 import com.example.idanl.blogsport.Models.PostRepository;
@@ -234,6 +235,7 @@ public class EditPostFragment extends Fragment {
     }
     private void enable_input(boolean b)
     {
+
         tv_Content.setEnabled(b);
         im_PostImage.setEnabled(b);
         tv_Category.setEnabled(b);

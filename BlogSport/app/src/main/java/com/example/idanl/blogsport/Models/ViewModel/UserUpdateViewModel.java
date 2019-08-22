@@ -25,8 +25,5 @@ public class UserUpdateViewModel extends AndroidViewModel {
     public void updateUserInfo(final String userName, Uri pickerImgUri, final UserRepository.UpdateUserInfoListener listener) {
         UserRepository.instance.updateUserInfo(userName,pickerImgUri,listener);
     }
-    public void isUserExist(String userId, UserRepository.ExistUserListener listener)
-    {
-        UserRepository.instance.isUserExist(userId, listener);
-    }
+
 }

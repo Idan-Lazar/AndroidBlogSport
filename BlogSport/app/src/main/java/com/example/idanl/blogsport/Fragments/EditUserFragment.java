@@ -3,6 +3,7 @@ package com.example.idanl.blogsport.Fragments;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.idanl.blogsport.Activities.MainActivity;
 import com.example.idanl.blogsport.Activities.RegisterActivity;
 import com.example.idanl.blogsport.Adapters.MyApplication;
 import com.example.idanl.blogsport.Models.Entities.User;
@@ -130,6 +132,7 @@ public class EditUserFragment extends Fragment {
                     @Override
                     public void onSuccess(String uri) {
                         showMessage("User Updated");
+                        enableInputs(true);
                         Navigation.findNavController(getView()).navigateUp();
                     }
 
@@ -154,14 +157,17 @@ public class EditUserFragment extends Fragment {
         Toast.makeText(MyApplication.getContext(),message,Toast.LENGTH_LONG).show();
     }
 
+
     private void enableInputs(boolean b) {
         if (!b)
         {
+
             progressBar.setVisibility(View.VISIBLE);
             updateButton.setVisibility(View.INVISIBLE);
         }
         else
         {
+
             progressBar.setVisibility(View.INVISIBLE);
             updateButton.setVisibility(View.VISIBLE);
         }
